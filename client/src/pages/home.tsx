@@ -8,6 +8,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import type { Barrack, Pic } from "@shared/schema";
 import { useState } from "react";
+import heroImage from "@assets/generated_images/Military_base_hero_banner_8bafbf52.png";
 
 type BarrackWithPic = Barrack & { pic: Pic | null };
 
@@ -39,7 +40,34 @@ export default function HomePage() {
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 py-8">
+      {/* Hero Section */}
+      <div className="relative h-[400px] overflow-hidden">
+        <img
+          src={heroImage}
+          alt="Military Base"
+          className="w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/50 to-black/70" />
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="max-w-4xl mx-auto px-4 text-center text-white">
+            <h1 className="text-4xl md:text-5xl font-bold mb-4">
+              Military Barracks Management System
+            </h1>
+            <p className="text-lg md:text-xl text-white/90 mb-6">
+              Centralized facility oversight and personnel management for all military barracks installations
+            </p>
+            <div className="flex gap-4 justify-center">
+              <Link href="#directory">
+                <Button size="lg" variant="default" data-testid="button-view-barracks">
+                  View All Barracks
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <main className="max-w-7xl mx-auto px-4 py-8" id="directory">
         <div className="mb-8">
           <h2 className="text-3xl font-bold mb-2">Barracks Directory</h2>
           <p className="text-muted-foreground">
