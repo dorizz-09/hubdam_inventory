@@ -1,6 +1,6 @@
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useRoute, useLocation } from "wouter";
-import { Building2, Save, ArrowLeft, Plus, Trash2, Package, Users } from "lucide-react";
+import { Building2, Save, ArrowLeft, Plus, Trash2, Package, Users, Eye, EyeOff } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -55,6 +55,7 @@ export default function AdminBarrackFormPage() {
   
   const [newInventoryItem, setNewInventoryItem] = useState({ itemName: "", quantity: "1" });
   const [newMember, setNewMember] = useState({ name: "", rank: "", role: "" });
+  const [showPicPassword, setShowPicPassword] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem("adminToken");
@@ -479,12 +480,29 @@ export default function AdminBarrackFormPage() {
                       <FormItem>
                         <FormLabel>PIC Password</FormLabel>
                         <FormControl>
-                          <Input 
-                            {...field} 
-                            type="password" 
-                            placeholder="Enter password for verification (optional)" 
-                            data-testid="input-pic-password" 
-                          />
+                          <div className="relative">
+                            <Input 
+                              {...field} 
+                              type={showPicPassword ? "text" : "password"}
+                              placeholder="Enter password for verification (optional)" 
+                              data-testid="input-pic-password"
+                              className="pr-10"
+                            />
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="icon"
+                              className="absolute right-0 top-0 h-full px-3 hover:bg-transparent"
+                              onClick={() => setShowPicPassword(!showPicPassword)}
+                              data-testid="button-toggle-pic-password-visibility"
+                            >
+                              {showPicPassword ? (
+                                <EyeOff className="h-4 w-4 text-muted-foreground" />
+                              ) : (
+                                <Eye className="h-4 w-4 text-muted-foreground" />
+                              )}
+                            </Button>
+                          </div>
                         </FormControl>
                         <p className="text-sm text-muted-foreground">
                           Leave blank when editing to keep the existing password
