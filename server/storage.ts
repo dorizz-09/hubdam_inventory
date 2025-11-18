@@ -41,6 +41,7 @@ export interface IStorage {
   // Inventory
   getAllInventory(): Promise<InventoryItem[]>;
   getInventoryByBarrackId(barackId: number): Promise<InventoryItem[]>;
+  getInventoryItem(id: number): Promise<InventoryItem | undefined>;
   createInventoryItem(item: InsertInventory): Promise<InventoryItem>;
   updateInventoryItem(id: number, item: Partial<InsertInventory>): Promise<InventoryItem | undefined>;
   deleteInventoryItem(id: number): Promise<void>;
@@ -48,6 +49,7 @@ export interface IStorage {
   // Members
   getAllMembers(): Promise<Member[]>;
   getMembersByBarrackId(barackId: number): Promise<Member[]>;
+  getMember(id: number): Promise<Member | undefined>;
   createMember(member: InsertMember): Promise<Member>;
   updateMember(id: number, member: Partial<InsertMember>): Promise<Member | undefined>;
   deleteMember(id: number): Promise<void>;
@@ -143,8 +145,15 @@ export class DatabaseStorage implements IStorage {
     return await db.select().from(inventory).where(eq(inventory.barackId, barackId));
   }
 
+  async getInventoryItem(id: number): Promise<InventoryItem | undefined> {
+    const [result] = await db.select().from(inventory).where(eq(inventory.id, id));
+    return result;
+  }
+
   async createInventoryItem(item: InsertInventory): Promise<InventoryItem> {
     const [result] = await db.insert(inventory).values(item).returning();
+    // Reset verification when inventory is created
+    await this.resetBarrackVerification(item.barackId);
     return result;
   }
 
@@ -180,8 +189,15 @@ export class DatabaseStorage implements IStorage {
     return await db.select().from(members).where(eq(members.barackId, barackId));
   }
 
+  async getMember(id: number): Promise<Member | undefined> {
+    const [result] = await db.select().from(members).where(eq(members.id, id));
+    return result;
+  }
+
   async createMember(member: InsertMember): Promise<Member> {
     const [result] = await db.insert(members).values(member).returning();
+    // Reset verification when member is created
+    await this.resetBarrackVerification(member.barackId);
     return result;
   }
 

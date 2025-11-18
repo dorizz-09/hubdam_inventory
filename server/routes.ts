@@ -209,10 +209,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const data = insertInventorySchema.parse(req.body);
       const item = await storage.createInventoryItem(data);
-      
-      // Reset verification when inventory is added
-      await storage.resetBarrackVerification(data.barackId);
-      
       res.json(item);
     } catch (error: any) {
       if (error instanceof z.ZodError) {
@@ -263,10 +259,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const data = insertMemberSchema.parse(req.body);
       const member = await storage.createMember(data);
-      
-      // Reset verification when member is added
-      await storage.resetBarrackVerification(data.barackId);
-      
       res.json(member);
     } catch (error: any) {
       if (error instanceof z.ZodError) {
