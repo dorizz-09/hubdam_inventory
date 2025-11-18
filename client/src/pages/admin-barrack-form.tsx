@@ -205,8 +205,8 @@ export default function AdminBarrackFormPage() {
                     <FormItem>
                       <FormLabel>Person in Charge (PIC)</FormLabel>
                       <Select
-                        onValueChange={(value) => field.onChange(value ? parseInt(value) : undefined)}
-                        value={field.value?.toString() || ""}
+                        onValueChange={(value) => field.onChange(value === "none" ? undefined : parseInt(value))}
+                        value={field.value?.toString() || "none"}
                       >
                         <FormControl>
                           <SelectTrigger data-testid="select-pic">
@@ -214,7 +214,7 @@ export default function AdminBarrackFormPage() {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="">No PIC</SelectItem>
+                          <SelectItem value="none">No PIC</SelectItem>
                           {pics?.map((pic) => (
                             <SelectItem key={pic.id} value={pic.id.toString()}>
                               {pic.rank ? `${pic.rank} ${pic.name}` : pic.name}
