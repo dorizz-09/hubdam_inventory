@@ -33,6 +33,7 @@ export interface IStorage {
   getPicById(id: number): Promise<Pic | undefined>;
   getPicByUsername(username: string): Promise<Pic | undefined>;
   createPic(pic: InsertPic & { passwordHash: string }): Promise<Pic>;
+  updatePic(id: number, pic: Partial<Pic>): Promise<Pic | undefined>;
   
   // Admins
   getAdminByUsername(username: string): Promise<Admin | undefined>;
@@ -122,6 +123,11 @@ export class DatabaseStorage implements IStorage {
 
   async createPic(pic: InsertPic & { passwordHash: string }): Promise<Pic> {
     const [result] = await db.insert(pics).values(pic).returning();
+    return result;
+  }
+
+  async updatePic(id: number, pic: Partial<Pic>): Promise<Pic | undefined> {
+    const [result] = await db.update(pics).set(pic).where(eq(pics.id, id)).returning();
     return result;
   }
 

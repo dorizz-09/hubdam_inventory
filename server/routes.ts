@@ -134,14 +134,53 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/barracks", verifyAdminToken, async (req, res) => {
     try {
       const data = insertBarrackSchema.parse(req.body);
+      const { picName, picPassword, ...rest } = data;
+      
+      // Create barrack data object with proper typing
+      let barrackData: { name: string; location: string; photoUrl?: string | null; picId?: number | null } = {
+        name: rest.name,
+        location: rest.location,
+        photoUrl: rest.photoUrl,
+      };
       
       // Normalize photo URL if it's from object storage
-      if (data.photoUrl) {
+      if (barrackData.photoUrl) {
         const objectStorageService = new ObjectStorageService();
-        data.photoUrl = objectStorageService.normalizeBarrackPhotoPath(data.photoUrl);
+        barrackData.photoUrl = objectStorageService.normalizeBarrackPhotoPath(barrackData.photoUrl);
       }
       
-      const barrack = await storage.createBarrack(data);
+      // Handle PIC creation/update if provided
+      let picId: number | null = null;
+      if (picName && picName.trim()) {
+        // Check if PIC with this username exists
+        let pic = await storage.getPicByUsername(picName);
+        
+        if (pic) {
+          // Update existing PIC's password if provided
+          if (picPassword && picPassword.trim()) {
+            const passwordHash = await bcrypt.hash(picPassword, 10);
+            pic = await storage.updatePic(pic.id, { passwordHash });
+          }
+        } else {
+          // Create new PIC if password is provided
+          if (picPassword && picPassword.trim()) {
+            const passwordHash = await bcrypt.hash(picPassword, 10);
+            pic = await storage.createPic({
+              username: picName,
+              name: picName,
+              passwordHash,
+              rank: null,
+            });
+          }
+        }
+        
+        if (pic) {
+          picId = pic.id;
+        }
+      }
+      
+      barrackData.picId = picId;
+      const barrack = await storage.createBarrack(barrackData);
       res.json(barrack);
     } catch (error: any) {
       if (error instanceof z.ZodError) {
@@ -155,14 +194,53 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const id = parseInt(req.params.id);
       const data = insertBarrackSchema.partial().parse(req.body);
+      const { picName, picPassword, ...rest } = data;
+      
+      // Create barrack update data object with proper typing
+      let barrackData: { name?: string; location?: string; photoUrl?: string | null; picId?: number | null } = {
+        name: rest.name,
+        location: rest.location,
+        photoUrl: rest.photoUrl,
+      };
       
       // Normalize photo URL if it's from object storage
-      if (data.photoUrl) {
+      if (barrackData.photoUrl) {
         const objectStorageService = new ObjectStorageService();
-        data.photoUrl = objectStorageService.normalizeBarrackPhotoPath(data.photoUrl);
+        barrackData.photoUrl = objectStorageService.normalizeBarrackPhotoPath(barrackData.photoUrl);
       }
       
-      const barrack = await storage.updateBarrack(id, data);
+      // Handle PIC creation/update if provided
+      let picId: number | null = null;
+      if (picName && picName.trim()) {
+        // Check if PIC with this username exists
+        let pic = await storage.getPicByUsername(picName);
+        
+        if (pic) {
+          // Update existing PIC's password only if provided
+          if (picPassword && picPassword.trim()) {
+            const passwordHash = await bcrypt.hash(picPassword, 10);
+            pic = await storage.updatePic(pic.id, { passwordHash });
+          }
+        } else {
+          // Create new PIC (requires password)
+          if (picPassword && picPassword.trim()) {
+            const passwordHash = await bcrypt.hash(picPassword, 10);
+            pic = await storage.createPic({
+              username: picName,
+              name: picName,
+              passwordHash,
+              rank: null,
+            });
+          }
+        }
+        
+        if (pic) {
+          picId = pic.id;
+        }
+      }
+      
+      barrackData.picId = picId;
+      const barrack = await storage.updateBarrack(id, barrackData);
       if (!barrack) {
         return res.status(404).send("Barrack not found");
       }

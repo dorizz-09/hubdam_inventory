@@ -11,7 +11,7 @@ import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import AdminHeader from "@/components/admin-header";
-import type { Barrack, Pic, InventoryItem, Member, BarrackDetail } from "@shared/schema";
+import type { Barrack, InventoryItem, Member, BarrackDetail } from "@shared/schema";
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -68,17 +68,14 @@ export default function AdminBarrackFormPage() {
     enabled: isEdit && barackId !== null,
   });
 
-  const { data: pics } = useQuery<Pic[]>({
-    queryKey: ["/api/pics"],
-  });
-
   const form = useForm({
     resolver: zodResolver(insertBarrackSchema),
     defaultValues: {
       name: "",
       location: "",
       photoUrl: modernBarrack,
-      picId: undefined as number | undefined,
+      picName: "",
+      picPassword: "",
     },
   });
 
@@ -88,7 +85,8 @@ export default function AdminBarrackFormPage() {
         name: barrack.name,
         location: barrack.location,
         photoUrl: barrack.photoUrl || modernBarrack,
-        picId: barrack.picId || undefined,
+        picName: barrack.pic?.name || "",
+        picPassword: "", // Don't prefill password for security
       });
       
       // Load existing inventory and members
@@ -456,34 +454,46 @@ export default function AdminBarrackFormPage() {
                   )}
                 />
 
-                <FormField
-                  control={form.control}
-                  name="picId"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Person in Charge (PIC)</FormLabel>
-                      <Select
-                        onValueChange={(value) => field.onChange(value === "none" ? undefined : parseInt(value))}
-                        value={field.value?.toString() || "none"}
-                      >
+                <div className="space-y-4">
+                  <FormField
+                    control={form.control}
+                    name="picName"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Person in Charge (PIC) Name</FormLabel>
                         <FormControl>
-                          <SelectTrigger data-testid="select-pic">
-                            <SelectValue placeholder="Select a PIC (optional)" />
-                          </SelectTrigger>
+                          <Input {...field} placeholder="e.g., John Smith (optional)" data-testid="input-pic-name" />
                         </FormControl>
-                        <SelectContent>
-                          <SelectItem value="none">No PIC</SelectItem>
-                          {pics?.map((pic) => (
-                            <SelectItem key={pic.id} value={pic.id.toString()}>
-                              {pic.rank ? `${pic.rank} ${pic.name}` : pic.name}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                        <p className="text-sm text-muted-foreground">
+                          This name will be used as the username for verification
+                        </p>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="picPassword"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>PIC Password</FormLabel>
+                        <FormControl>
+                          <Input 
+                            {...field} 
+                            type="password" 
+                            placeholder="Enter password for verification (optional)" 
+                            data-testid="input-pic-password" 
+                          />
+                        </FormControl>
+                        <p className="text-sm text-muted-foreground">
+                          Leave blank when editing to keep the existing password
+                        </p>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
               </CardContent>
             </Card>
 

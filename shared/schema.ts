@@ -79,6 +79,10 @@ export const membersRelations = relations(members, ({ one }) => ({
 export const insertBarrackSchema = createInsertSchema(barracks).omit({
   id: true,
   verified: true,
+  picId: true,
+}).extend({
+  picName: z.string().optional(),
+  picPassword: z.string().optional(),
 });
 
 export const insertPicSchema = createInsertSchema(pics).omit({
