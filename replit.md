@@ -11,6 +11,7 @@ The system supports role-based access with two distinct user types:
 **Latest Update (Nov 18, 2025):** 
 - Integrated Replit Object Storage for barrack photo uploads from device. Admins can now upload custom photos directly from their devices in addition to selecting from predefined photos.
 - Changed PIC assignment from dropdown selection to direct credential input. Admins now type PIC name (used as username) and password directly in the barrack form. The system automatically creates or updates PIC records.
+- Added password visibility toggles to all password fields (admin login, PIC password input, and verification dialog). Users can now click an eye icon to show/hide passwords as plain text.
 
 ## User Preferences
 
