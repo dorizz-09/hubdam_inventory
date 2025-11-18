@@ -5,6 +5,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { z } from "zod";
 import { insertBarrackSchema, insertInventorySchema, insertMemberSchema, insertPicSchema, insertAdminSchema, loginSchema } from "@shared/schema";
+import { ObjectStorageService, ObjectNotFoundError } from "./objectStorage";
 
 const JWT_SECRET = process.env.SESSION_SECRET || "your-secret-key-change-in-production";
 
@@ -133,6 +134,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/barracks", verifyAdminToken, async (req, res) => {
     try {
       const data = insertBarrackSchema.parse(req.body);
+      
+      // Normalize photo URL if it's from object storage
+      if (data.photoUrl) {
+        const objectStorageService = new ObjectStorageService();
+        data.photoUrl = objectStorageService.normalizeBarrackPhotoPath(data.photoUrl);
+      }
+      
       const barrack = await storage.createBarrack(data);
       res.json(barrack);
     } catch (error: any) {
@@ -147,6 +155,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const id = parseInt(req.params.id);
       const data = insertBarrackSchema.partial().parse(req.body);
+      
+      // Normalize photo URL if it's from object storage
+      if (data.photoUrl) {
+        const objectStorageService = new ObjectStorageService();
+        data.photoUrl = objectStorageService.normalizeBarrackPhotoPath(data.photoUrl);
+      }
+      
       const barrack = await storage.updateBarrack(id, data);
       if (!barrack) {
         return res.status(404).send("Barrack not found");
@@ -296,6 +311,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Admin creation endpoint removed for security - use database seeding for admin creation
+
+  // Object Storage Routes - Serve public objects (barrack photos)
+  app.get("/public-objects/:filePath(*)", async (req, res) => {
+    const filePath = req.params.filePath;
+    const objectStorageService = new ObjectStorageService();
+    try {
+      const file = await objectStorageService.searchPublicObject(filePath);
+      if (!file) {
+        return res.status(404).json({ error: "File not found" });
+      }
+      objectStorageService.downloadObject(file, res);
+    } catch (error) {
+      console.error("Error searching for public object:", error);
+      return res.status(500).json({ error: "Internal server error" });
+    }
+  });
+
+  // Get upload URL for barrack photo
+  app.post("/api/barracks/photo-upload-url", verifyAdminToken, async (req, res) => {
+    try {
+      const objectStorageService = new ObjectStorageService();
+      const uploadURL = await objectStorageService.getBarrackPhotoUploadURL();
+      res.json({ uploadURL });
+    } catch (error: any) {
+      console.error("Error getting upload URL:", error);
+      res.status(500).send(error.message);
+    }
+  });
 
   const httpServer = createServer(app);
 

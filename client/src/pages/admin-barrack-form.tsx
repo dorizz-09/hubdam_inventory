@@ -17,6 +17,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { insertBarrackSchema } from "@shared/schema";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { BarrackPhotoUpload } from "@/components/BarrackPhotoUpload";
 import modernBarrack from "@assets/generated_images/Modern_military_barrack_building_fcae3325.png";
 import traditionalBarrack from "@assets/generated_images/Traditional_barracks_building_66b8645e.png";
 import contemporaryBarrack from "@assets/generated_images/Contemporary_barracks_complex_2e44b7c9.png";
@@ -425,29 +426,31 @@ export default function AdminBarrackFormPage() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Photo</FormLabel>
-                      <Select onValueChange={field.onChange} value={field.value || undefined}>
-                        <FormControl>
-                          <SelectTrigger data-testid="select-photo">
-                            <SelectValue placeholder="Select a photo" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {PHOTO_OPTIONS.map((option) => (
-                            <SelectItem key={option.value} value={option.value}>
-                              {option.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      {field.value && (
-                        <div className="mt-3 border rounded-lg overflow-hidden">
-                          <img
-                            src={field.value}
-                            alt="Preview"
-                            className="w-full aspect-video object-cover"
-                          />
+                      <div className="space-y-3">
+                        <Select onValueChange={field.onChange} value={field.value || undefined}>
+                          <FormControl>
+                            <SelectTrigger data-testid="select-photo">
+                              <SelectValue placeholder="Select a predefined photo" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {PHOTO_OPTIONS.map((option) => (
+                              <SelectItem key={option.value} value={option.value}>
+                                {option.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <div className="flex items-center gap-2">
+                          <div className="flex-1 border-t"></div>
+                          <span className="text-sm text-muted-foreground">or</span>
+                          <div className="flex-1 border-t"></div>
                         </div>
-                      )}
+                        <BarrackPhotoUpload
+                          currentPhotoUrl={field.value}
+                          onPhotoUploaded={(url) => field.onChange(url)}
+                        />
+                      </div>
                       <FormMessage />
                     </FormItem>
                   )}

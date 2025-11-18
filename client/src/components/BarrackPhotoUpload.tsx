@@ -1,0 +1,132 @@
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Camera, Loader2 } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+
+interface BarrackPhotoUploadProps {
+  currentPhotoUrl?: string;
+  onPhotoUploaded: (photoUrl: string) => void;
+}
+
+export function BarrackPhotoUpload({ currentPhotoUrl, onPhotoUploaded }: BarrackPhotoUploadProps) {
+  const [uploading, setUploading] = useState(false);
+  const { toast } = useToast();
+
+  const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      toast({
+        title: "Invalid file type",
+        description: "Please select an image file",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (file.size > 10485760) {
+      toast({
+        title: "File too large",
+        description: "Please select an image under 10MB",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setUploading(true);
+
+    try {
+      const uploadUrlResponse = await fetch("/api/barracks/photo-upload-url", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${localStorage.getItem("adminToken")}`,
+        },
+      });
+
+      if (!uploadUrlResponse.ok) {
+        throw new Error("Failed to get upload URL");
+      }
+
+      const { uploadURL } = await uploadUrlResponse.json();
+
+      const uploadResponse = await fetch(uploadURL, {
+        method: "PUT",
+        body: file,
+        headers: {
+          "Content-Type": file.type,
+        },
+      });
+
+      if (!uploadResponse.ok) {
+        throw new Error("Failed to upload photo");
+      }
+
+      onPhotoUploaded(uploadURL);
+
+      toast({
+        title: "Photo uploaded",
+        description: "Barrack photo has been uploaded successfully",
+      });
+    } catch (error) {
+      console.error("Upload error:", error);
+      toast({
+        title: "Upload failed",
+        description: "Failed to upload photo. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  return (
+    <div className="space-y-3">
+      <div className="flex items-center gap-3">
+        <input
+          type="file"
+          accept="image/*"
+          onChange={handleFileSelect}
+          disabled={uploading}
+          className="hidden"
+          id="photo-upload"
+          data-testid="input-photo-file"
+        />
+        <label htmlFor="photo-upload">
+          <Button
+            type="button"
+            variant="outline"
+            disabled={uploading}
+            asChild
+            data-testid="button-upload-photo"
+          >
+            <span className="cursor-pointer">
+              {uploading ? (
+                <>
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  Uploading...
+                </>
+              ) : (
+                <>
+                  <Camera className="h-4 w-4 mr-2" />
+                  {currentPhotoUrl ? "Change Photo" : "Upload Photo"}
+                </>
+              )}
+            </span>
+          </Button>
+        </label>
+      </div>
+
+      {currentPhotoUrl && (
+        <div className="relative w-full aspect-video rounded-md overflow-hidden border">
+          <img
+            src={currentPhotoUrl}
+            alt="Barrack preview"
+            className="w-full h-full object-cover"
+            data-testid="img-photo-preview"
+          />
+        </div>
+      )}
+    </div>
+  );
+}
