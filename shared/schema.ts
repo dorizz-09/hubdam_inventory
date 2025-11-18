@@ -21,6 +21,7 @@ export const pics = pgTable("pics", {
   passwordHash: text("password_hash").notNull(),
   name: text("name").notNull(),
   rank: text("rank"),
+  photoUrl: text("photo_url"),
 });
 
 // Admin table
