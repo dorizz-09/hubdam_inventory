@@ -8,7 +8,9 @@ The system supports role-based access with two distinct user types:
 - **Admins**: Full system access for managing all barracks, inventory, and personnel
 - **PICs (Persons in Charge)**: Assigned to specific barracks with verification capabilities
 
-**Latest Update (Nov 18, 2025):** Integrated Replit Object Storage for barrack photo uploads from device. Admins can now upload custom photos directly from their devices in addition to selecting from predefined photos.
+**Latest Update (Nov 18, 2025):** 
+- Integrated Replit Object Storage for barrack photo uploads from device. Admins can now upload custom photos directly from their devices in addition to selecting from predefined photos.
+- Changed PIC assignment from dropdown selection to direct credential input. Admins now type PIC name (used as username) and password directly in the barrack form. The system automatically creates or updates PIC records.
 
 ## User Preferences
 
