@@ -1,4 +1,4 @@
-import { Switch, Route, useRoute } from "wouter";
+import { Switch, Route } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -14,37 +14,37 @@ import AdminBarrackFormPage from "@/pages/admin-barrack-form";
 import AdminInventoryPage from "@/pages/admin-inventory";
 import AdminMembersPage from "@/pages/admin-members";
 
-function AdminRouter() {
-  return (
-    <AdminLayout>
-      <Switch>
-        <Route path="/admin/dashboard" component={AdminDashboardPage} />
-        <Route path="/admin/barracks" component={AdminBarracksPage} />
-        <Route path="/admin/barracks/new" component={AdminBarrackFormPage} />
-        <Route path="/admin/barracks/:id/edit" component={AdminBarrackFormPage} />
-        <Route path="/admin/inventory" component={AdminInventoryPage} />
-        <Route path="/admin/members" component={AdminMembersPage} />
-        <Route component={NotFound} />
-      </Switch>
-    </AdminLayout>
-  );
-}
-
 function Router() {
-  const [isAdminRoute] = useRoute("/admin/:rest*");
-  const [isAdminLogin] = useRoute("/admin/login");
-
-  // Admin routes with sidebar (except login)
-  if (isAdminRoute && !isAdminLogin) {
-    return <AdminRouter />;
-  }
-
-  // Public routes and admin login
   return (
     <Switch>
+      {/* Public routes */}
       <Route path="/" component={HomePage} />
       <Route path="/barrack/:id" component={BarrackDetailPage} />
+      
+      {/* Admin login (no sidebar) */}
       <Route path="/admin/login" component={AdminLoginPage} />
+      
+      {/* Admin routes with sidebar - more specific routes first */}
+      <Route path="/admin/barracks/new">
+        <AdminLayout><AdminBarrackFormPage /></AdminLayout>
+      </Route>
+      <Route path="/admin/barracks/:id/edit">
+        <AdminLayout><AdminBarrackFormPage /></AdminLayout>
+      </Route>
+      <Route path="/admin/barracks">
+        <AdminLayout><AdminBarracksPage /></AdminLayout>
+      </Route>
+      <Route path="/admin/inventory">
+        <AdminLayout><AdminInventoryPage /></AdminLayout>
+      </Route>
+      <Route path="/admin/members">
+        <AdminLayout><AdminMembersPage /></AdminLayout>
+      </Route>
+      <Route path="/admin/dashboard">
+        <AdminLayout><AdminDashboardPage /></AdminLayout>
+      </Route>
+      
+      {/* 404 fallback */}
       <Route component={NotFound} />
     </Switch>
   );

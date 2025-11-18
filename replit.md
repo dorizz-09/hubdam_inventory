@@ -12,6 +12,7 @@ The system supports role-based access with two distinct user types:
 - Integrated Replit Object Storage for barrack photo uploads from device. Admins can now upload custom photos directly from their devices in addition to selecting from predefined photos.
 - Changed PIC assignment from dropdown selection to direct credential input. Admins now type PIC name (used as username) and password directly in the barrack form. The system automatically creates or updates PIC records.
 - Added password visibility toggles to all password fields (admin login, PIC password input, and verification dialog). Users can now click an eye icon to show/hide passwords as plain text.
+- Implemented Shadcn sidebar navigation for admin panel. Replaced horizontal header with a collapsible sidebar containing Dashboard, Barracks, Inventory, and Members navigation. Sidebar footer includes "View Public Site" link and logout button.
 
 ## User Preferences
 
