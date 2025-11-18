@@ -53,16 +53,9 @@ export default function HomePage() {
             <h1 className="text-4xl md:text-5xl font-bold mb-4">
               Military Barracks Management System
             </h1>
-            <p className="text-lg md:text-xl text-white/90 mb-6">
+            <p className="text-lg md:text-xl text-white/90">
               Centralized facility oversight and personnel management for all military barracks installations
             </p>
-            <div className="flex gap-4 justify-center">
-              <Link href="#directory">
-                <Button size="lg" variant="default" data-testid="button-view-barracks">
-                  View All Barracks
-                </Button>
-              </Link>
-            </div>
           </div>
         </div>
       </div>
