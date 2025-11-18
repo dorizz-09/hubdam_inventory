@@ -8,6 +8,8 @@ The system supports role-based access with two distinct user types:
 - **Admins**: Full system access for managing all barracks, inventory, and personnel
 - **PICs (Persons in Charge)**: Assigned to specific barracks with verification capabilities
 
+**Latest Update (Nov 18, 2025):** Integrated Replit Object Storage for barrack photo uploads from device. Admins can now upload custom photos directly from their devices in addition to selecting from predefined photos.
+
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
@@ -157,5 +159,14 @@ This allows type sharing between frontend and backend while maintaining separati
 
 **Asset Management:**
 - Static barrack images stored in `attached_assets/generated_images/`
-- Four pre-generated military barrack photos
+- Four pre-generated military barrack photos available as predefined options
 - Images referenced via Vite's asset import system
+- **Object Storage Integration:**
+  - Replit Object Storage for custom photo uploads
+  - `ObjectStorageService` in `server/objectStorage.ts` handles upload/download operations
+  - `BarrackPhotoUpload` component for device file uploads
+  - Photos stored in public directory with unique UUIDs
+  - Presigned URL flow for direct-to-storage uploads
+  - URL normalization converts Google Cloud Storage URLs to `/public-objects/...` paths
+  - Public photos served via `GET /public-objects/:filePath` endpoint
+  - Upload URL generation via `POST /api/barracks/photo-upload-url` (admin-protected)
