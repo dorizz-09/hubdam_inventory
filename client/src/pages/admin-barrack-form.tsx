@@ -10,7 +10,6 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import { queryClient, apiRequest } from "@/lib/queryClient";
-import AdminHeader from "@/components/admin-header";
 import type { Barrack, InventoryItem, Member, BarrackDetail } from "@shared/schema";
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
@@ -360,10 +359,7 @@ export default function AdminBarrackFormPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <AdminHeader />
-      
-      <main className="max-w-5xl mx-auto px-4 py-8">
+    <div className="max-w-5xl mx-auto px-4 py-8">
         <div className="mb-6">
           <Button
             variant="ghost"
@@ -720,7 +716,6 @@ export default function AdminBarrackFormPage() {
             </div>
           </form>
         </Form>
-      </main>
     </div>
   );
 }

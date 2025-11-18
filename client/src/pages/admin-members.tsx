@@ -1,5 +1,4 @@
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { useLocation } from "wouter";
 import { Users, Plus, Edit, Trash2 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -18,16 +17,14 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import AdminHeader from "@/components/admin-header";
 import type { Member, Barrack } from "@shared/schema";
 import { useToast } from "@/hooks/use-toast";
 import { queryClient, apiRequest } from "@/lib/queryClient";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 type BarrackWithPic = Barrack & { pic: any };
 
 export default function AdminMembersPage() {
-  const [, setLocation] = useLocation();
   const { toast } = useToast();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [deleteId, setDeleteId] = useState<number | null>(null);
@@ -38,13 +35,6 @@ export default function AdminMembersPage() {
     rank: "",
     role: "",
   });
-
-  useEffect(() => {
-    const token = localStorage.getItem("adminToken");
-    if (!token) {
-      setLocation("/admin/login");
-    }
-  }, [setLocation]);
 
   const { data: members } = useQuery<Member[]>({
     queryKey: ["/api/members"],
@@ -143,10 +133,7 @@ export default function AdminMembersPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <AdminHeader />
-      
-      <main className="max-w-7xl mx-auto px-4 py-8">
+    <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-3xl font-bold mb-2">Manage Members</h1>
@@ -224,7 +211,6 @@ export default function AdminMembersPage() {
             </Button>
           </div>
         )}
-      </main>
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent data-testid="dialog-member-form">

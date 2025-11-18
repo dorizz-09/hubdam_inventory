@@ -1,24 +1,15 @@
 import { useQuery } from "@tanstack/react-query";
-import { useLocation, Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { Building2, Package, Users, ShieldCheck, Plus } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import AdminHeader from "@/components/admin-header";
 import type { Barrack, InventoryItem, Member } from "@shared/schema";
-import { useEffect } from "react";
 
 type BarrackWithPic = Barrack & { pic: any };
 
 export default function AdminDashboardPage() {
   const [, setLocation] = useLocation();
-
-  useEffect(() => {
-    const token = localStorage.getItem("adminToken");
-    if (!token) {
-      setLocation("/admin/login");
-    }
-  }, [setLocation]);
 
   const { data: barracks, isLoading: barracksLoading } = useQuery<BarrackWithPic[]>({
     queryKey: ["/api/barracks"],
@@ -40,10 +31,7 @@ export default function AdminDashboardPage() {
   const isLoading = barracksLoading || inventoryLoading || membersLoading;
 
   return (
-    <div className="min-h-screen bg-background">
-      <AdminHeader />
-      
-      <main className="max-w-7xl mx-auto px-4 py-8">
+    <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold mb-2">Admin Dashboard</h1>
           <p className="text-muted-foreground">
@@ -172,7 +160,6 @@ export default function AdminDashboardPage() {
             </Card>
           </Link>
         </div>
-      </main>
     </div>
   );
 }

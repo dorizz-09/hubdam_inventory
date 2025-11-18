@@ -1,5 +1,5 @@
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { useLocation, Link } from "wouter";
+import { Link } from "wouter";
 import { Building2, Plus, Edit, Trash2, ShieldCheck, Shield } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -15,25 +15,16 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import AdminHeader from "@/components/admin-header";
 import type { Barrack, Pic } from "@shared/schema";
 import { useToast } from "@/hooks/use-toast";
 import { queryClient, apiRequest } from "@/lib/queryClient";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 type BarrackWithPic = Barrack & { pic: Pic | null };
 
 export default function AdminBarracksPage() {
-  const [, setLocation] = useLocation();
   const { toast } = useToast();
   const [deleteId, setDeleteId] = useState<number | null>(null);
-
-  useEffect(() => {
-    const token = localStorage.getItem("adminToken");
-    if (!token) {
-      setLocation("/admin/login");
-    }
-  }, [setLocation]);
 
   const { data: barracks, isLoading } = useQuery<BarrackWithPic[]>({
     queryKey: ["/api/barracks"],
@@ -64,10 +55,7 @@ export default function AdminBarracksPage() {
   });
 
   return (
-    <div className="min-h-screen bg-background">
-      <AdminHeader />
-      
-      <main className="max-w-7xl mx-auto px-4 py-8">
+    <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-3xl font-bold mb-2">Manage Barracks</h1>
@@ -168,7 +156,6 @@ export default function AdminBarracksPage() {
             </Link>
           </div>
         )}
-      </main>
 
       <AlertDialog open={deleteId !== null} onOpenChange={() => setDeleteId(null)}>
         <AlertDialogContent data-testid="dialog-delete-confirm">
