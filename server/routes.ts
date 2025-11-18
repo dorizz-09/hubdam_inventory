@@ -55,29 +55,48 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const id = parseInt(req.params.id);
       const { username, password } = loginSchema.parse(req.body);
 
+      console.log(`[VERIFY] Barrack ID: ${id}, Username: ${username}`);
+
       const barrack = await storage.getBarrackById(id);
       if (!barrack) {
+        console.log(`[VERIFY] Barrack ${id} not found`);
         return res.status(404).send("Barrack not found");
       }
 
+      console.log(`[VERIFY] Barrack found, PIC ID: ${barrack.picId}, Has PIC: ${!!barrack.pic}`);
+
       if (!barrack.pic) {
+        console.log(`[VERIFY] No PIC assigned to barrack ${id}`);
         return res.status(400).send("No PIC assigned to this barrack");
       }
 
       const pic = await storage.getPicByUsername(username);
-      if (!pic || pic.id !== barrack.picId) {
+      console.log(`[VERIFY] PIC lookup result: ${pic ? `Found PIC ID ${pic.id}` : 'Not found'}`);
+      
+      if (!pic) {
+        console.log(`[VERIFY] PIC ${username} not found`);
+        return res.status(401).send("Invalid credentials or unauthorized PIC");
+      }
+
+      if (pic.id !== barrack.picId) {
+        console.log(`[VERIFY] PIC mismatch - PIC ID: ${pic.id}, Barrack PIC ID: ${barrack.picId}`);
         return res.status(401).send("Invalid credentials or unauthorized PIC");
       }
 
       const isValid = await bcrypt.compare(password, pic.passwordHash);
+      console.log(`[VERIFY] Password valid: ${isValid}`);
+      
       if (!isValid) {
+        console.log(`[VERIFY] Invalid password for ${username}`);
         return res.status(401).send("Invalid credentials");
       }
 
       // Update verification status
       await storage.updateBarrack(id, { verified: true });
+      console.log(`[VERIFY] Barrack ${id} verified successfully`);
       res.json({ success: true });
     } catch (error: any) {
+      console.error(`[VERIFY] Error:`, error);
       if (error instanceof z.ZodError) {
         return res.status(400).send(error.errors[0].message);
       }
