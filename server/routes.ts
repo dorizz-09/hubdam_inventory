@@ -212,15 +212,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const existingBarrack = await storage.getBarrackById(id);
       
-      let barrackData: { name?: string; location?: string; photoUrl?: string | null; picId?: number | null } = {
-        name: rest.name,
-        location: rest.location,
-        photoUrl: rest.photoUrl,
-      };
+      const barrackData: { name?: string; location?: string; photoUrl?: string | null; picId?: number | null } = {};
       
-      if (existingBarrack && existingBarrack.photoUrl && rest.photoUrl !== existingBarrack.photoUrl) {
-        if (existingBarrack.photoUrl.startsWith("/uploads/")) {
-          deletePhoto(existingBarrack.photoUrl);
+      if ('name' in req.body) {
+        barrackData.name = rest.name;
+      }
+      if ('location' in req.body) {
+        barrackData.location = rest.location;
+      }
+      
+      if ('photoUrl' in req.body) {
+        barrackData.photoUrl = rest.photoUrl;
+        
+        if (existingBarrack && existingBarrack.photoUrl && rest.photoUrl !== existingBarrack.photoUrl) {
+          if (existingBarrack.photoUrl.startsWith("/uploads/")) {
+            deletePhoto(existingBarrack.photoUrl);
+          }
         }
       }
       
@@ -250,7 +257,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       }
       
-      barrackData.picId = picId;
+      if ('picName' in req.body) {
+        barrackData.picId = picId;
+      }
+      
       const barrack = await storage.updateBarrack(id, barrackData);
       if (!barrack) {
         return res.status(404).send("Barrack not found");
