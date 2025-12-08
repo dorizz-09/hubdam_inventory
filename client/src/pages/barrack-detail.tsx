@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import type { BarrackDetail } from "@shared/schema";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 
 export default function BarrackDetailPage() {
@@ -22,6 +22,19 @@ export default function BarrackDetailPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [navHidden, setNavHidden] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const navbarHeight = 64;
+      const heroHeight = 320; // h-64 md:h-80 (using larger value)
+      const scrollThreshold = heroHeight - navbarHeight;
+      setNavHidden(window.scrollY > scrollThreshold);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const { data: barrack, isLoading } = useQuery<BarrackDetail>({
     queryKey: ["/api/barracks", barackId],
@@ -98,7 +111,7 @@ export default function BarrackDetailPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="bg-primary text-primary-foreground">
+      <header className={`sticky top-0 z-50 bg-primary text-primary-foreground transition-transform duration-300 ${navHidden ? '-translate-y-full' : 'translate-y-0'}`}>
         <div className="max-w-7xl mx-auto px-4 h-16 flex items-center">
           <Link href="/">
             <Button variant="ghost" size="sm" className="gap-2 text-primary-foreground hover:bg-primary-foreground/20 hover:text-primary-foreground" data-testid="button-back-home">

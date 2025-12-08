@@ -7,17 +7,30 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import type { Barrack, Pic } from "@shared/schema";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import heroImage from "@assets/generated_images/Military_base_hero_banner_8bafbf52.png";
 
 type BarrackWithPic = Barrack & { pic: Pic | null };
 
 export default function HomePage() {
   const [searchQuery, setSearchQuery] = useState("");
+  const [navHidden, setNavHidden] = useState(false);
   
   const { data: barracks, isLoading } = useQuery<BarrackWithPic[]>({
     queryKey: ["/api/barracks"],
   });
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const navbarHeight = 64;
+      const heroHeight = 400;
+      const scrollThreshold = heroHeight - navbarHeight;
+      setNavHidden(window.scrollY > scrollThreshold);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const filteredBarracks = barracks?.filter((barrack) =>
     barrack.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -26,7 +39,7 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="bg-primary text-primary-foreground">
+      <header className={`sticky top-0 z-50 bg-primary text-primary-foreground transition-transform duration-300 ${navHidden ? '-translate-y-full' : 'translate-y-0'}`}>
         <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Building2 className="w-6 h-6" />
