@@ -159,7 +159,7 @@ export default function BarrackDetailPage() {
                       <TableBody>
                         {barrack.inventory.map((item) => (
                           <TableRow key={item.id} data-testid={`row-inventory-${item.id}`}>
-                            <TableCell className="font-medium" data-testid={`text-item-name-${item.id}`}>
+                            <TableCell className="font-medium max-w-[200px] break-words" data-testid={`text-item-name-${item.id}`}>
                               {item.itemName}
                             </TableCell>
                             <TableCell data-testid={`text-item-quantity-${item.id}`}>
