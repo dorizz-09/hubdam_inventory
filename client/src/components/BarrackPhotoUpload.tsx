@@ -36,10 +36,8 @@ export function BarrackPhotoUpload({ currentPhotoUrl, onPhotoUploaded }: Barrack
     }
 
     setUploading(true);
-    console.log("Starting photo upload for file:", file.name, file.type, file.size);
 
     try {
-      console.log("Requesting upload URL...");
       const uploadUrlResponse = await fetch("/api/barracks/photo-upload-url", {
         method: "POST",
         headers: {
@@ -48,14 +46,11 @@ export function BarrackPhotoUpload({ currentPhotoUrl, onPhotoUploaded }: Barrack
       });
 
       if (!uploadUrlResponse.ok) {
-        console.error("Failed to get upload URL, status:", uploadUrlResponse.status);
         throw new Error("Failed to get upload URL");
       }
 
       const { uploadURL, publicURL } = await uploadUrlResponse.json();
-      console.log("Got upload URL, publicURL:", publicURL);
 
-      console.log("Uploading file to storage...");
       const uploadResponse = await fetch(uploadURL, {
         method: "PUT",
         body: file,
@@ -65,10 +60,8 @@ export function BarrackPhotoUpload({ currentPhotoUrl, onPhotoUploaded }: Barrack
       });
       
       if (!uploadResponse.ok) {
-        console.error("Failed to upload to storage, status:", uploadResponse.status);
         throw new Error("Failed to upload photo");
       }
-      console.log("Upload successful! Calling onPhotoUploaded with:", publicURL);
       // Use the publicURL for storage and preview (served via /public-objects/...)
       onPhotoUploaded(publicURL);
       
@@ -97,12 +90,6 @@ export function BarrackPhotoUpload({ currentPhotoUrl, onPhotoUploaded }: Barrack
     }
   };
 
-  const handleButtonClick = () => {
-    if (fileInputRef.current) {
-      fileInputRef.current.click();
-    }
-  };
-
   return (
     <div className="space-y-3">
       <div className="flex items-center gap-3">
@@ -113,27 +100,32 @@ export function BarrackPhotoUpload({ currentPhotoUrl, onPhotoUploaded }: Barrack
           onChange={handleFileSelect}
           disabled={uploading}
           className="hidden"
+          id="photo-upload"
           data-testid="input-photo-file"
         />
-        <Button
-          type="button"
-          variant="outline"
-          disabled={uploading}
-          onClick={handleButtonClick}
-          data-testid="button-upload-photo"
-        >
-          {uploading ? (
-            <>
-              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-              Uploading...
-            </>
-          ) : (
-            <>
-              <Camera className="h-4 w-4 mr-2" />
-              {currentPhotoUrl ? "Change Photo" : "Upload Photo"}
-            </>
-          )}
-        </Button>
+        <label htmlFor="photo-upload">
+          <Button
+            type="button"
+            variant="outline"
+            disabled={uploading}
+            asChild
+            data-testid="button-upload-photo"
+          >
+            <span className="cursor-pointer">
+              {uploading ? (
+                <>
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  Uploading...
+                </>
+              ) : (
+                <>
+                  <Camera className="h-4 w-4 mr-2" />
+                  {currentPhotoUrl ? "Change Photo" : "Upload Photo"}
+                </>
+              )}
+            </span>
+          </Button>
+        </label>
       </div>
 
       {currentPhotoUrl && (

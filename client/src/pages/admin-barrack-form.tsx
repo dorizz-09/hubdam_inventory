@@ -11,7 +11,7 @@ import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import type { Barrack, InventoryItem, Member, BarrackDetail } from "@shared/schema";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { insertBarrackSchema } from "@shared/schema";
@@ -21,9 +21,6 @@ import modernBarrack from "@assets/generated_images/Modern_military_barrack_buil
 import traditionalBarrack from "@assets/generated_images/Traditional_barracks_building_66b8645e.png";
 import contemporaryBarrack from "@assets/generated_images/Contemporary_barracks_complex_2e44b7c9.png";
 import trainingBarrack from "@assets/generated_images/Training_barracks_facility_bb321117.png";
-
-// Module-level variable to store uploaded photo URL (bypasses React state/ref closures)
-let modulePhotoUrl: string | null = null;
 
 const PHOTO_OPTIONS = [
   { value: modernBarrack, label: "Modern Barrack" },
@@ -60,21 +57,13 @@ export default function AdminBarrackFormPage() {
   const [newMember, setNewMember] = useState({ name: "", rank: "", role: "" });
   const [showPicPassword, setShowPicPassword] = useState(false);
   const [uploadedPhotoUrl, setUploadedPhotoUrl] = useState<string | null>(null);
-  const uploadedPhotoUrlRef = useRef<string | null>(null);
-  const hasInitialized = useRef(false);
 
   useEffect(() => {
     const token = localStorage.getItem("adminToken");
     if (!token) {
       setLocation("/admin/login");
     }
-    // Only clear photo URL storage on first mount (for create mode)
-    if (!hasInitialized.current && !isEdit) {
-      modulePhotoUrl = null;
-      localStorage.removeItem("pendingBarrackPhotoUrl");
-      hasInitialized.current = true;
-    }
-  }, [setLocation, isEdit]);
+  }, [setLocation]);
 
   const { data: barrack } = useQuery<BarrackDetail>({
     queryKey: ["/api/barracks", barackId],
@@ -94,21 +83,10 @@ export default function AdminBarrackFormPage() {
 
   useEffect(() => {
     if (barrack) {
-      // Check if the existing photo is a custom uploaded one (not from predefined options)
-      const predefinedPhotos = [modernBarrack, traditionalBarrack, contemporaryBarrack, trainingBarrack];
-      const isCustomPhoto = barrack.photoUrl && !predefinedPhotos.includes(barrack.photoUrl);
-      
-      // If it's a custom uploaded photo, set it in uploadedPhotoUrl state to preserve it
-      if (isCustomPhoto) {
-        setUploadedPhotoUrl(barrack.photoUrl);
-        uploadedPhotoUrlRef.current = barrack.photoUrl;
-      }
-      
       form.reset({
         name: barrack.name,
         location: barrack.location,
-        // For custom photos, default to first option in form but rely on uploadedPhotoUrl
-        photoUrl: isCustomPhoto ? modernBarrack : (barrack.photoUrl || modernBarrack),
+        photoUrl: barrack.photoUrl || modernBarrack,
         picName: barrack.pic?.name || "",
         picPassword: "", // Don't prefill password for security
       });
@@ -270,24 +248,9 @@ export default function AdminBarrackFormPage() {
   });
 
   const onSubmit = (data: any) => {
-    // Try multiple sources for the photo URL to handle closure issues
-    const formPhotoUrl = form.getValues("photoUrl");
-    const refPhotoUrl = uploadedPhotoUrlRef.current;
-    const localStoragePhotoUrl = localStorage.getItem("pendingBarrackPhotoUrl");
-    console.log("onSubmit - localStorage:", localStoragePhotoUrl);
-    console.log("onSubmit - modulePhotoUrl:", modulePhotoUrl);
-    console.log("onSubmit - uploadedPhotoUrlRef:", refPhotoUrl);
-    console.log("onSubmit - form.getValues photoUrl:", formPhotoUrl);
-    console.log("onSubmit - data.photoUrl:", data.photoUrl);
-    
-    // Use localStorage first (most reliable), then module, then ref, then form, then data
-    const finalPhotoUrl = localStoragePhotoUrl || modulePhotoUrl || refPhotoUrl || formPhotoUrl || data.photoUrl;
-    console.log("finalPhotoUrl chosen:", finalPhotoUrl);
+    // Use uploaded photo URL if available, otherwise use form value
+    const finalPhotoUrl = uploadedPhotoUrl || data.photoUrl;
     data.photoUrl = finalPhotoUrl;
-    
-    // Clear localStorage after using it
-    localStorage.removeItem("pendingBarrackPhotoUrl");
-    console.log("data being sent:", JSON.stringify(data));
     
     // Validate inventory items
     for (let i = 0; i < inventory.length; i++) {
@@ -469,17 +432,7 @@ export default function AdminBarrackFormPage() {
                     <FormItem>
                       <FormLabel>Photo</FormLabel>
                       <div className="space-y-3">
-                        <Select 
-                          onValueChange={(value) => {
-                            field.onChange(value);
-                            // Clear uploaded photo when selecting a predefined option
-                            setUploadedPhotoUrl(null);
-                            uploadedPhotoUrlRef.current = null;
-                            modulePhotoUrl = null;
-                            localStorage.removeItem("pendingBarrackPhotoUrl");
-                          }} 
-                          value={field.value || undefined}
-                        >
+                        <Select onValueChange={field.onChange} value={field.value || undefined}>
                           <FormControl>
                             <SelectTrigger data-testid="select-photo">
                               <SelectValue placeholder="Select a predefined photo" />
@@ -501,14 +454,8 @@ export default function AdminBarrackFormPage() {
                         <BarrackPhotoUpload
                           currentPhotoUrl={uploadedPhotoUrl || field.value}
                           onPhotoUploaded={(url) => {
-                            console.log("Photo uploaded callback received URL:", url);
                             setUploadedPhotoUrl(url);
-                            uploadedPhotoUrlRef.current = url;
-                            modulePhotoUrl = url; // Module-level backup
-                            // Also save to localStorage as ultimate backup
-                            localStorage.setItem("pendingBarrackPhotoUrl", url);
                             form.setValue("photoUrl", url, { shouldDirty: true, shouldValidate: true });
-                            console.log("Photo URL saved everywhere:", url);
                           }}
                         />
                       </div>
