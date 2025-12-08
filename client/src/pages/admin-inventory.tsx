@@ -33,6 +33,7 @@ export default function AdminInventoryPage() {
     barackId: "",
     itemName: "",
     quantity: "0",
+    status: "APBN",
   });
 
   const { data: inventory } = useQuery<InventoryItem[]>({
@@ -106,10 +107,11 @@ export default function AdminInventoryPage() {
         barackId: item.barackId.toString(),
         itemName: item.itemName,
         quantity: item.quantity.toString(),
+        status: item.status || "APBN",
       });
     } else {
       setEditItem(null);
-      setFormData({ barackId: "", itemName: "", quantity: "0" });
+      setFormData({ barackId: "", itemName: "", quantity: "0", status: "APBN" });
     }
     setDialogOpen(true);
   };
@@ -117,7 +119,7 @@ export default function AdminInventoryPage() {
   const handleCloseDialog = () => {
     setDialogOpen(false);
     setEditItem(null);
-    setFormData({ barackId: "", itemName: "", quantity: "0" });
+    setFormData({ barackId: "", itemName: "", quantity: "0", status: "APBN" });
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -126,6 +128,7 @@ export default function AdminInventoryPage() {
       barackId: parseInt(formData.barackId),
       itemName: formData.itemName,
       quantity: parseInt(formData.quantity),
+      status: formData.status,
     });
   };
 
@@ -154,6 +157,7 @@ export default function AdminInventoryPage() {
                       <TableHead>Barrack</TableHead>
                       <TableHead>Item Name</TableHead>
                       <TableHead className="text-right">Quantity</TableHead>
+                      <TableHead>Status</TableHead>
                       <TableHead className="text-right w-32">Actions</TableHead>
                     </TableRow>
                   </TableHeader>
@@ -165,6 +169,7 @@ export default function AdminInventoryPage() {
                           <TableCell className="font-medium">{barrack?.name || 'Unknown'}</TableCell>
                           <TableCell data-testid={`text-inventory-name-${item.id}`}>{item.itemName}</TableCell>
                           <TableCell className="text-right" data-testid={`text-inventory-quantity-${item.id}`}>{item.quantity}</TableCell>
+                          <TableCell data-testid={`text-inventory-status-${item.id}`}>{item.status || 'APBN'}</TableCell>
                           <TableCell className="text-right">
                             <div className="flex justify-end gap-2">
                               <Button
@@ -258,6 +263,21 @@ export default function AdminInventoryPage() {
                   required
                   data-testid="input-quantity"
                 />
+              </div>
+              <div>
+                <Label htmlFor="status">Status</Label>
+                <Select
+                  value={formData.status}
+                  onValueChange={(value) => setFormData({ ...formData, status: value })}
+                >
+                  <SelectTrigger id="status" data-testid="select-status">
+                    <SelectValue placeholder="Select status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="APBN">APBN</SelectItem>
+                    <SelectItem value="Swadaya">Swadaya</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
             </div>
             <DialogFooter>

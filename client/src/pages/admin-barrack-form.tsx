@@ -33,6 +33,7 @@ type InventoryItemForm = {
   id?: number;
   itemName: string;
   quantity: number | string; // Allow string for input handling
+  status: string;
 };
 
 type MemberForm = {
@@ -52,7 +53,7 @@ export default function AdminBarrackFormPage() {
   const [inventory, setInventory] = useState<InventoryItemForm[]>([]);
   const [members, setMembers] = useState<MemberForm[]>([]);
   
-  const [newInventoryItem, setNewInventoryItem] = useState({ itemName: "", quantity: "1" });
+  const [newInventoryItem, setNewInventoryItem] = useState({ itemName: "", quantity: "1", status: "APBN" });
   const [newMember, setNewMember] = useState({ name: "", rank: "", role: "" });
   const [showPicPassword, setShowPicPassword] = useState(false);
 
@@ -94,6 +95,7 @@ export default function AdminBarrackFormPage() {
         id: item.id,
         itemName: item.itemName,
         quantity: item.quantity,
+        status: item.status || "APBN",
       })));
       
       setMembers(barrack.members.map(member => ({
@@ -144,6 +146,7 @@ export default function AdminBarrackFormPage() {
               barackId: barrackIdToUse,
               itemName: item.itemName,
               quantity: quantity,
+              status: item.status || "APBN",
             }, {
               headers: { Authorization: `Bearer ${token}` },
             });
@@ -152,6 +155,7 @@ export default function AdminBarrackFormPage() {
               barackId: barrackIdToUse,
               itemName: item.itemName,
               quantity: quantity,
+              status: item.status || "APBN",
             }, {
               headers: { Authorization: `Bearer ${token}` },
             });
@@ -165,6 +169,7 @@ export default function AdminBarrackFormPage() {
             barackId: barrackIdToUse,
             itemName: item.itemName,
             quantity: quantity,
+            status: item.status || "APBN",
           }, {
             headers: { Authorization: `Bearer ${token}` },
           });
@@ -320,7 +325,7 @@ export default function AdminBarrackFormPage() {
     }
     
     setInventory([...inventory, { ...newInventoryItem }]);
-    setNewInventoryItem({ itemName: "", quantity: "1" });
+    setNewInventoryItem({ itemName: "", quantity: "1", status: "APBN" });
   };
 
   const removeInventoryItem = (index: number) => {
@@ -527,6 +532,7 @@ export default function AdminBarrackFormPage() {
                         <TableRow>
                           <TableHead>Item Name</TableHead>
                           <TableHead className="w-32">Quantity</TableHead>
+                          <TableHead className="w-32">Status</TableHead>
                           <TableHead className="w-16"></TableHead>
                         </TableRow>
                       </TableHeader>
@@ -548,6 +554,20 @@ export default function AdminBarrackFormPage() {
                                 onChange={(e) => updateInventoryItem(index, "quantity", e.target.value)}
                                 data-testid={`input-inventory-quantity-${index}`}
                               />
+                            </TableCell>
+                            <TableCell>
+                              <Select
+                                value={item.status}
+                                onValueChange={(value) => updateInventoryItem(index, "status", value)}
+                              >
+                                <SelectTrigger data-testid={`select-inventory-status-${index}`}>
+                                  <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="APBN">APBN</SelectItem>
+                                  <SelectItem value="Swadaya">Swadaya</SelectItem>
+                                </SelectContent>
+                              </Select>
                             </TableCell>
                             <TableCell>
                               <Button
@@ -583,6 +603,18 @@ export default function AdminBarrackFormPage() {
                     className="w-32"
                     data-testid="input-new-inventory-quantity"
                   />
+                  <Select
+                    value={newInventoryItem.status}
+                    onValueChange={(value) => setNewInventoryItem({ ...newInventoryItem, status: value })}
+                  >
+                    <SelectTrigger className="w-32" data-testid="select-new-inventory-status">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="APBN">APBN</SelectItem>
+                      <SelectItem value="Swadaya">Swadaya</SelectItem>
+                    </SelectContent>
+                  </Select>
                   <Button
                     type="button"
                     onClick={addInventoryItem}

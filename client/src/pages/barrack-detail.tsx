@@ -153,6 +153,7 @@ export default function BarrackDetailPage() {
                         <TableRow>
                           <TableHead>Item Name</TableHead>
                           <TableHead className="text-right">Quantity</TableHead>
+                          <TableHead>Status</TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
@@ -163,6 +164,9 @@ export default function BarrackDetailPage() {
                             </TableCell>
                             <TableCell className="text-right" data-testid={`text-item-quantity-${item.id}`}>
                               {item.quantity}
+                            </TableCell>
+                            <TableCell data-testid={`text-item-status-${item.id}`}>
+                              {item.status || 'APBN'}
                             </TableCell>
                           </TableRow>
                         ))}
