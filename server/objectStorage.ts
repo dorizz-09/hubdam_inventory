@@ -94,7 +94,7 @@ export class ObjectStorageService {
     }
   }
 
-  async getBarrackPhotoUploadURL(): Promise<string> {
+  async getBarrackPhotoUploadURL(): Promise<{ uploadURL: string; publicURL: string }> {
     const publicSearchPaths = this.getPublicObjectSearchPaths();
     if (!publicSearchPaths.length) {
       throw new Error("PUBLIC_OBJECT_SEARCH_PATHS not set");
@@ -105,12 +105,17 @@ export class ObjectStorageService {
 
     const { bucketName, objectName } = parseObjectPath(fullPath);
 
-    return signObjectURL({
+    const uploadURL = await signObjectURL({
       bucketName,
       objectName,
       method: "PUT",
       ttlSec: 900,
     });
+    
+    // Generate the public URL path for displaying the uploaded photo
+    const publicURL = `/public-objects/barracks/${photoId}.jpg`;
+
+    return { uploadURL, publicURL };
   }
 
   normalizeBarrackPhotoPath(rawPath: string): string {

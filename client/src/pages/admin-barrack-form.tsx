@@ -56,6 +56,7 @@ export default function AdminBarrackFormPage() {
   const [newInventoryItem, setNewInventoryItem] = useState({ itemName: "", quantity: "1", status: "APBN" });
   const [newMember, setNewMember] = useState({ name: "", rank: "", role: "" });
   const [showPicPassword, setShowPicPassword] = useState(false);
+  const [uploadedPhotoUrl, setUploadedPhotoUrl] = useState<string | null>(null);
 
   useEffect(() => {
     const token = localStorage.getItem("adminToken");
@@ -247,6 +248,10 @@ export default function AdminBarrackFormPage() {
   });
 
   const onSubmit = (data: any) => {
+    // Use uploaded photo URL if available, otherwise use form value
+    const finalPhotoUrl = uploadedPhotoUrl || data.photoUrl;
+    data.photoUrl = finalPhotoUrl;
+    
     // Validate inventory items
     for (let i = 0; i < inventory.length; i++) {
       const item = inventory[i];
@@ -447,8 +452,11 @@ export default function AdminBarrackFormPage() {
                           <div className="flex-1 border-t"></div>
                         </div>
                         <BarrackPhotoUpload
-                          currentPhotoUrl={field.value}
-                          onPhotoUploaded={(url) => field.onChange(url)}
+                          currentPhotoUrl={uploadedPhotoUrl || field.value}
+                          onPhotoUploaded={(url) => {
+                            setUploadedPhotoUrl(url);
+                            form.setValue("photoUrl", url, { shouldDirty: true, shouldValidate: true });
+                          }}
                         />
                       </div>
                       <FormMessage />

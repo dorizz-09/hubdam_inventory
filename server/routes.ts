@@ -410,8 +410,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/barracks/photo-upload-url", verifyAdminToken, async (req, res) => {
     try {
       const objectStorageService = new ObjectStorageService();
-      const uploadURL = await objectStorageService.getBarrackPhotoUploadURL();
-      res.json({ uploadURL });
+      const { uploadURL, publicURL } = await objectStorageService.getBarrackPhotoUploadURL();
+      res.json({ uploadURL, publicURL });
     } catch (error: any) {
       console.error("Error getting upload URL:", error);
       res.status(500).send(error.message);

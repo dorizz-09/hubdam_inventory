@@ -8,7 +8,10 @@ The system supports role-based access with two distinct user types:
 - **Admins**: Full system access for managing all barracks, inventory, and personnel
 - **PICs (Persons in Charge)**: Assigned to specific barracks with verification capabilities
 
-**Latest Update (Nov 18, 2025):** 
+**Latest Update (Dec 8, 2025):** 
+- Fixed photo upload persistence issue: Uploaded photos now correctly save to the database when creating/editing barracks. The fix uses a separate state variable (`uploadedPhotoUrl`) to track uploaded photos independently from form state, ensuring the URL persists through form submission.
+
+**Previous Updates (Nov 18, 2025):** 
 - Integrated Replit Object Storage for barrack photo uploads from device. Admins can now upload custom photos directly from their devices in addition to selecting from predefined photos.
 - Changed PIC assignment from dropdown selection to direct credential input. Admins now type PIC name (used as username) and password directly in the barrack form. The system automatically creates or updates PIC records.
 - Added password visibility toggles to all password fields (admin login, PIC password input, and verification dialog). Users can now click an eye icon to show/hide passwords as plain text.

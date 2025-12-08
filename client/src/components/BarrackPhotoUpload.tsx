@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Camera, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
@@ -10,6 +10,7 @@ interface BarrackPhotoUploadProps {
 
 export function BarrackPhotoUpload({ currentPhotoUrl, onPhotoUploaded }: BarrackPhotoUploadProps) {
   const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
   const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -48,7 +49,7 @@ export function BarrackPhotoUpload({ currentPhotoUrl, onPhotoUploaded }: Barrack
         throw new Error("Failed to get upload URL");
       }
 
-      const { uploadURL } = await uploadUrlResponse.json();
+      const { uploadURL, publicURL } = await uploadUrlResponse.json();
 
       const uploadResponse = await fetch(uploadURL, {
         method: "PUT",
@@ -57,15 +58,17 @@ export function BarrackPhotoUpload({ currentPhotoUrl, onPhotoUploaded }: Barrack
           "Content-Type": file.type,
         },
       });
-
+      
       if (!uploadResponse.ok) {
         throw new Error("Failed to upload photo");
       }
-
-      // Strip query parameters from the upload URL to get the base storage URL
-      // The backend will normalize this to /public-objects/... path
-      const baseUrl = uploadURL.split('?')[0];
-      onPhotoUploaded(baseUrl);
+      // Use the publicURL for storage and preview (served via /public-objects/...)
+      onPhotoUploaded(publicURL);
+      
+      // Reset file input so the same file can be selected again
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
 
       toast({
         title: "Photo uploaded",
@@ -78,6 +81,10 @@ export function BarrackPhotoUpload({ currentPhotoUrl, onPhotoUploaded }: Barrack
         description: "Failed to upload photo. Please try again.",
         variant: "destructive",
       });
+      // Reset file input on error too
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
     } finally {
       setUploading(false);
     }
@@ -87,6 +94,7 @@ export function BarrackPhotoUpload({ currentPhotoUrl, onPhotoUploaded }: Barrack
     <div className="space-y-3">
       <div className="flex items-center gap-3">
         <input
+          ref={fileInputRef}
           type="file"
           accept="image/*"
           onChange={handleFileSelect}
