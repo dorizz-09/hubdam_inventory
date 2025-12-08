@@ -33,7 +33,7 @@ export default function HomePage() {
             <h1 className="text-xl font-semibold">Military Barracks Management</h1>
           </div>
           <Link href="/admin/login">
-            <Button variant="secondary" size="sm" data-testid="button-admin-login">
+            <Button variant="outline" size="sm" className="bg-primary-foreground/20 border-primary-foreground/40 text-primary-foreground hover:bg-primary-foreground/30" data-testid="button-admin-login">
               Admin Login
             </Button>
           </Link>
