@@ -5,11 +5,41 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { z } from "zod";
 import { insertBarrackSchema, insertInventorySchema, insertMemberSchema, insertPicSchema, insertAdminSchema, loginSchema } from "@shared/schema";
-import { ObjectStorageService, ObjectNotFoundError } from "./objectStorage";
+import multer from "multer";
+import * as path from "path";
+import { ensureUploadsDir, getUploadsDir, generatePhotoFilename, getPublicUrl, deletePhoto, servePhoto } from "./localFileStorage";
 
 const JWT_SECRET = process.env.SESSION_SECRET || "your-secret-key-change-in-production";
 
-// Middleware to verify admin JWT token
+ensureUploadsDir();
+
+const ALLOWED_MIME_TYPES = ["image/jpeg", "image/png", "image/gif", "image/webp"];
+const MAX_FILE_SIZE = 10 * 1024 * 1024;
+
+const uploadStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, getUploadsDir());
+  },
+  filename: (req, file, cb) => {
+    const safeFilename = generatePhotoFilename(file.originalname);
+    cb(null, safeFilename);
+  },
+});
+
+const upload = multer({
+  storage: uploadStorage,
+  limits: {
+    fileSize: MAX_FILE_SIZE,
+  },
+  fileFilter: (req, file, cb) => {
+    if (ALLOWED_MIME_TYPES.includes(file.mimetype)) {
+      cb(null, true);
+    } else {
+      cb(new Error("Invalid file type. Only JPEG, PNG, GIF, and WebP are allowed."));
+    }
+  },
+});
+
 function verifyAdminToken(req: any, res: any, next: any) {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
@@ -27,7 +57,6 @@ function verifyAdminToken(req: any, res: any, next: any) {
 }
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Public Routes - Barracks
   app.get("/api/barracks", async (req, res) => {
     try {
       const barracks = await storage.getAllBarracks();
@@ -50,7 +79,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // PIC Verification
   app.post("/api/barracks/:id/verify", async (req, res) => {
     try {
       const id = parseInt(req.params.id);
@@ -92,7 +120,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).send("Invalid credentials");
       }
 
-      // Update verification status
       await storage.updateBarrack(id, { verified: true });
       console.log(`[VERIFY] Barrack ${id} verified successfully`);
       res.json({ success: true });
@@ -105,7 +132,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Admin Authentication
   app.post("/api/admin/login", async (req, res) => {
     try {
       const { username, password } = loginSchema.parse(req.body);
@@ -130,39 +156,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Admin Routes - Barracks
   app.post("/api/barracks", verifyAdminToken, async (req, res) => {
     try {
       const data = insertBarrackSchema.parse(req.body);
       const { picName, picPassword, ...rest } = data;
       
-      // Create barrack data object with proper typing
       let barrackData: { name: string; location: string; photoUrl?: string | null; picId?: number | null } = {
         name: rest.name,
         location: rest.location,
         photoUrl: rest.photoUrl,
       };
       
-      // Normalize photo URL if it's from object storage
-      if (barrackData.photoUrl) {
-        const objectStorageService = new ObjectStorageService();
-        barrackData.photoUrl = objectStorageService.normalizeBarrackPhotoPath(barrackData.photoUrl);
-      }
-      
-      // Handle PIC creation/update if provided
       let picId: number | null = null;
       if (picName && picName.trim()) {
-        // Check if PIC with this username exists
         let pic = await storage.getPicByUsername(picName);
         
         if (pic) {
-          // Update existing PIC's password if provided
           if (picPassword && picPassword.trim()) {
             const passwordHash = await bcrypt.hash(picPassword, 10);
             pic = await storage.updatePic(pic.id, { passwordHash });
           }
         } else {
-          // Create new PIC if password is provided
           if (picPassword && picPassword.trim()) {
             const passwordHash = await bcrypt.hash(picPassword, 10);
             pic = await storage.createPic({
@@ -196,33 +210,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const data = insertBarrackSchema.partial().parse(req.body);
       const { picName, picPassword, ...rest } = data;
       
-      // Create barrack update data object with proper typing
+      const existingBarrack = await storage.getBarrackById(id);
+      
       let barrackData: { name?: string; location?: string; photoUrl?: string | null; picId?: number | null } = {
         name: rest.name,
         location: rest.location,
         photoUrl: rest.photoUrl,
       };
       
-      // Normalize photo URL if it's from object storage
-      if (barrackData.photoUrl) {
-        const objectStorageService = new ObjectStorageService();
-        barrackData.photoUrl = objectStorageService.normalizeBarrackPhotoPath(barrackData.photoUrl);
+      if (existingBarrack && existingBarrack.photoUrl && rest.photoUrl !== existingBarrack.photoUrl) {
+        if (existingBarrack.photoUrl.startsWith("/uploads/")) {
+          deletePhoto(existingBarrack.photoUrl);
+        }
       }
       
-      // Handle PIC creation/update if provided
       let picId: number | null = null;
       if (picName && picName.trim()) {
-        // Check if PIC with this username exists
         let pic = await storage.getPicByUsername(picName);
         
         if (pic) {
-          // Update existing PIC's password only if provided
           if (picPassword && picPassword.trim()) {
             const passwordHash = await bcrypt.hash(picPassword, 10);
             pic = await storage.updatePic(pic.id, { passwordHash });
           }
         } else {
-          // Create new PIC (requires password)
           if (picPassword && picPassword.trim()) {
             const passwordHash = await bcrypt.hash(picPassword, 10);
             pic = await storage.createPic({
@@ -256,6 +267,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.delete("/api/barracks/:id", verifyAdminToken, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
+      
+      const barrack = await storage.getBarrackById(id);
+      if (barrack && barrack.photoUrl && barrack.photoUrl.startsWith("/uploads/")) {
+        deletePhoto(barrack.photoUrl);
+      }
+      
       await storage.deleteBarrack(id);
       res.json({ success: true });
     } catch (error: any) {
@@ -263,7 +280,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // PICs
   app.get("/api/pics", async (req, res) => {
     try {
       const pics = await storage.getAllPics();
@@ -288,7 +304,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Inventory
   app.get("/api/inventory", async (req, res) => {
     try {
       const inventory = await storage.getAllInventory();
@@ -338,7 +353,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Members
   app.get("/api/members", async (req, res) => {
     try {
       const members = await storage.getAllMembers();
@@ -388,34 +402,41 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Admin creation endpoint removed for security - use database seeding for admin creation
+  app.get("/uploads/:filename", (req, res) => {
+    const filename = req.params.filename;
+    
+    if (filename.includes("..") || filename.includes("/") || filename.includes("\\")) {
+      return res.status(400).json({ error: "Invalid filename" });
+    }
+    
+    servePhoto(filename, res);
+  });
 
-  // Object Storage Routes - Serve public objects (barrack photos)
-  app.get("/public-objects/:filePath(*)", async (req, res) => {
-    const filePath = req.params.filePath;
-    const objectStorageService = new ObjectStorageService();
+  app.post("/api/barracks/photo-upload", verifyAdminToken, upload.single("photo"), (req: any, res) => {
     try {
-      const file = await objectStorageService.searchPublicObject(filePath);
-      if (!file) {
-        return res.status(404).json({ error: "File not found" });
+      if (!req.file) {
+        return res.status(400).json({ error: "No file uploaded" });
       }
-      objectStorageService.downloadObject(file, res);
-    } catch (error) {
-      console.error("Error searching for public object:", error);
-      return res.status(500).json({ error: "Internal server error" });
+      
+      const publicUrl = getPublicUrl(req.file.filename);
+      res.json({ photoUrl: publicUrl });
+    } catch (error: any) {
+      console.error("Error uploading photo:", error);
+      res.status(500).json({ error: error.message || "Failed to upload photo" });
     }
   });
 
-  // Get upload URL for barrack photo
-  app.post("/api/barracks/photo-upload-url", verifyAdminToken, async (req, res) => {
-    try {
-      const objectStorageService = new ObjectStorageService();
-      const { uploadURL, publicURL } = await objectStorageService.getBarrackPhotoUploadURL();
-      res.json({ uploadURL, publicURL });
-    } catch (error: any) {
-      console.error("Error getting upload URL:", error);
-      res.status(500).send(error.message);
+  app.use((err: any, req: any, res: any, next: any) => {
+    if (err instanceof multer.MulterError) {
+      if (err.code === "LIMIT_FILE_SIZE") {
+        return res.status(400).json({ error: "File too large. Maximum size is 10MB." });
+      }
+      return res.status(400).json({ error: err.message });
     }
+    if (err.message && err.message.includes("Invalid file type")) {
+      return res.status(400).json({ error: err.message });
+    }
+    next(err);
   });
 
   const httpServer = createServer(app);
