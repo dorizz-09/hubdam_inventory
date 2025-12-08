@@ -36,6 +36,7 @@ export const inventory = pgTable("inventory", {
   barackId: integer("barack_id").notNull().references(() => barracks.id, { onDelete: "cascade" }),
   itemName: text("item_name").notNull(),
   quantity: integer("quantity").notNull().default(0),
+  status: text("status").notNull().default("APBN"),
 });
 
 // Members table
