@@ -9,10 +9,12 @@ The system supports role-based access with two distinct user types:
 - **PICs (Persons in Charge)**: Assigned to specific barracks with verification capabilities
 
 **Latest Update (Dec 8, 2025):** 
-- Fixed photo upload persistence issue: Uploaded photos now correctly save to the database when creating/editing barracks. The fix uses a separate state variable (`uploadedPhotoUrl`) to track uploaded photos independently from form state, ensuring the URL persists through form submission.
+- Replaced Replit Object Storage with local folder storage for photo uploads. Photos are now stored in the `/uploads` folder on the server, making the application portable for local development and VPS hosting.
+- Photo upload endpoint changed from signed URL flow to direct multipart upload via `POST /api/barracks/photo-upload`.
+- Old photos are automatically deleted when replaced or when barracks are deleted.
 
 **Previous Updates (Nov 18, 2025):** 
-- Integrated Replit Object Storage for barrack photo uploads from device. Admins can now upload custom photos directly from their devices in addition to selecting from predefined photos.
+- Admins can upload custom photos directly from their devices in addition to selecting from predefined photos.
 - Changed PIC assignment from dropdown selection to direct credential input. Admins now type PIC name (used as username) and password directly in the barrack form. The system automatically creates or updates PIC records.
 - Added password visibility toggles to all password fields (admin login, PIC password input, and verification dialog). Users can now click an eye icon to show/hide passwords as plain text.
 - Implemented Shadcn sidebar navigation for admin panel. Replaced horizontal header with a collapsible sidebar containing Dashboard, Barracks, Inventory, and Members navigation. Sidebar footer includes "View Public Site" link and logout button.
@@ -168,12 +170,11 @@ This allows type sharing between frontend and backend while maintaining separati
 - Static barrack images stored in `attached_assets/generated_images/`
 - Four pre-generated military barrack photos available as predefined options
 - Images referenced via Vite's asset import system
-- **Object Storage Integration:**
-  - Replit Object Storage for custom photo uploads
-  - `ObjectStorageService` in `server/objectStorage.ts` handles upload/download operations
+- **Local Photo Storage:**
+  - Custom uploaded photos stored in `/uploads` folder on the server
+  - `localFileStorage.ts` handles file operations (save, serve, delete)
   - `BarrackPhotoUpload` component for device file uploads
-  - Photos stored in public directory with unique UUIDs
-  - Presigned URL flow for direct-to-storage uploads
-  - URL normalization converts Google Cloud Storage URLs to `/public-objects/...` paths
-  - Public photos served via `GET /public-objects/:filePath` endpoint
-  - Upload URL generation via `POST /api/barracks/photo-upload-url` (admin-protected)
+  - Direct multipart upload via `POST /api/barracks/photo-upload` (admin-protected)
+  - Photos served via `GET /uploads/:filename` endpoint
+  - Automatic cleanup: old photos deleted when replaced or when barracks are deleted
+  - Works locally and on VPS hosting without cloud dependencies
