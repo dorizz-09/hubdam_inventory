@@ -62,7 +62,10 @@ export function BarrackPhotoUpload({ currentPhotoUrl, onPhotoUploaded }: Barrack
         throw new Error("Failed to upload photo");
       }
 
-      onPhotoUploaded(uploadURL);
+      // Strip query parameters from the upload URL to get the base storage URL
+      // The backend will normalize this to /public-objects/... path
+      const baseUrl = uploadURL.split('?')[0];
+      onPhotoUploaded(baseUrl);
 
       toast({
         title: "Photo uploaded",
