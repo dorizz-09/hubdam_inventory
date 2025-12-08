@@ -90,6 +90,12 @@ export function BarrackPhotoUpload({ currentPhotoUrl, onPhotoUploaded }: Barrack
     }
   };
 
+  const handleButtonClick = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
   return (
     <div className="space-y-3">
       <div className="flex items-center gap-3">
@@ -100,32 +106,27 @@ export function BarrackPhotoUpload({ currentPhotoUrl, onPhotoUploaded }: Barrack
           onChange={handleFileSelect}
           disabled={uploading}
           className="hidden"
-          id="photo-upload"
           data-testid="input-photo-file"
         />
-        <label htmlFor="photo-upload">
-          <Button
-            type="button"
-            variant="outline"
-            disabled={uploading}
-            asChild
-            data-testid="button-upload-photo"
-          >
-            <span className="cursor-pointer">
-              {uploading ? (
-                <>
-                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                  Uploading...
-                </>
-              ) : (
-                <>
-                  <Camera className="h-4 w-4 mr-2" />
-                  {currentPhotoUrl ? "Change Photo" : "Upload Photo"}
-                </>
-              )}
-            </span>
-          </Button>
-        </label>
+        <Button
+          type="button"
+          variant="outline"
+          disabled={uploading}
+          onClick={handleButtonClick}
+          data-testid="button-upload-photo"
+        >
+          {uploading ? (
+            <>
+              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+              Uploading...
+            </>
+          ) : (
+            <>
+              <Camera className="h-4 w-4 mr-2" />
+              {currentPhotoUrl ? "Change Photo" : "Upload Photo"}
+            </>
+          )}
+        </Button>
       </div>
 
       {currentPhotoUrl && (
