@@ -73,15 +73,15 @@ export default function HomePage() {
         </div>
       </div>
 
-      <main className="max-w-7xl mx-auto px-4 py-8" id="directory">
-        <div className="mb-8">
-          <h2 className="text-3xl font-bold mb-2">Barracks Directory</h2>
-          <p className="text-muted-foreground">
-            View all military barracks facilities and their current status
-          </p>
-        </div>
+      <main className="max-w-7xl mx-auto px-4" id="directory">
+        <div className="sticky top-0 z-40 bg-background py-6 -mx-4 px-4">
+          <div className="mb-4">
+            <h2 className="text-3xl font-bold mb-2">Barracks Directory</h2>
+            <p className="text-muted-foreground">
+              View all military barracks facilities and their current status
+            </p>
+          </div>
 
-        <div className="mb-6">
           <div className="relative max-w-md">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input
@@ -94,6 +94,8 @@ export default function HomePage() {
             />
           </div>
         </div>
+
+        <div className="pt-2 pb-8">
 
         {isLoading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -163,6 +165,7 @@ export default function HomePage() {
             </p>
           </div>
         )}
+        </div>
       </main>
     </div>
   );
