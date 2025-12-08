@@ -60,7 +60,7 @@ export default function BarrackDetailPage() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-background">
-        <header className="border-b bg-card">
+        <header className="bg-primary text-primary-foreground">
           <div className="max-w-7xl mx-auto px-4 h-16 flex items-center">
             <Skeleton className="h-6 w-32" />
           </div>
@@ -98,10 +98,10 @@ export default function BarrackDetailPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="border-b bg-card">
+      <header className="bg-primary text-primary-foreground">
         <div className="max-w-7xl mx-auto px-4 h-16 flex items-center">
           <Link href="/">
-            <Button variant="ghost" size="sm" className="gap-2" data-testid="button-back-home">
+            <Button variant="ghost" size="sm" className="gap-2 text-primary-foreground hover:bg-primary-foreground/20 hover:text-primary-foreground" data-testid="button-back-home">
               <ArrowLeft className="w-4 h-4" />
               Back to Directory
             </Button>
