@@ -26,14 +26,14 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="border-b bg-card">
+      <header className="border-b bg-primary text-primary-foreground">
         <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Building2 className="w-6 h-6 text-primary" />
+            <Building2 className="w-6 h-6" />
             <h1 className="text-xl font-semibold">Military Barracks Management</h1>
           </div>
           <Link href="/admin/login">
-            <Button variant="outline" size="sm" data-testid="button-admin-login">
+            <Button variant="secondary" size="sm" data-testid="button-admin-login">
               Admin Login
             </Button>
           </Link>
