@@ -83,10 +83,20 @@ export default function AdminBarrackFormPage() {
 
   useEffect(() => {
     if (barrack) {
+      // Check if the existing photo is a custom uploaded one (not from predefined options)
+      const predefinedPhotos = [modernBarrack, traditionalBarrack, contemporaryBarrack, trainingBarrack];
+      const isCustomPhoto = barrack.photoUrl && !predefinedPhotos.includes(barrack.photoUrl);
+      
+      // If it's a custom uploaded photo, set it in uploadedPhotoUrl state to preserve it
+      if (isCustomPhoto) {
+        setUploadedPhotoUrl(barrack.photoUrl);
+      }
+      
       form.reset({
         name: barrack.name,
         location: barrack.location,
-        photoUrl: barrack.photoUrl || modernBarrack,
+        // For custom photos, default to first option in form but rely on uploadedPhotoUrl
+        photoUrl: isCustomPhoto ? modernBarrack : (barrack.photoUrl || modernBarrack),
         picName: barrack.pic?.name || "",
         picPassword: "", // Don't prefill password for security
       });
@@ -432,7 +442,14 @@ export default function AdminBarrackFormPage() {
                     <FormItem>
                       <FormLabel>Photo</FormLabel>
                       <div className="space-y-3">
-                        <Select onValueChange={field.onChange} value={field.value || undefined}>
+                        <Select 
+                          onValueChange={(value) => {
+                            field.onChange(value);
+                            // Clear uploaded photo when selecting a predefined option
+                            setUploadedPhotoUrl(null);
+                          }} 
+                          value={field.value || undefined}
+                        >
                           <FormControl>
                             <SelectTrigger data-testid="select-photo">
                               <SelectValue placeholder="Select a predefined photo" />
