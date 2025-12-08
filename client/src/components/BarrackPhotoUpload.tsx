@@ -38,34 +38,26 @@ export function BarrackPhotoUpload({ currentPhotoUrl, onPhotoUploaded }: Barrack
     setUploading(true);
 
     try {
-      const uploadUrlResponse = await fetch("/api/barracks/photo-upload-url", {
+      const formData = new FormData();
+      formData.append("photo", file);
+
+      const uploadResponse = await fetch("/api/barracks/photo-upload", {
         method: "POST",
         headers: {
           "Authorization": `Bearer ${localStorage.getItem("adminToken")}`,
         },
+        body: formData,
       });
 
-      if (!uploadUrlResponse.ok) {
-        throw new Error("Failed to get upload URL");
-      }
-
-      const { uploadURL, publicURL } = await uploadUrlResponse.json();
-
-      const uploadResponse = await fetch(uploadURL, {
-        method: "PUT",
-        body: file,
-        headers: {
-          "Content-Type": file.type,
-        },
-      });
-      
       if (!uploadResponse.ok) {
-        throw new Error("Failed to upload photo");
+        const errorData = await uploadResponse.json().catch(() => ({}));
+        throw new Error(errorData.error || "Failed to upload photo");
       }
-      // Use the publicURL for storage and preview (served via /public-objects/...)
-      onPhotoUploaded(publicURL);
+
+      const { photoUrl } = await uploadResponse.json();
       
-      // Reset file input so the same file can be selected again
+      onPhotoUploaded(photoUrl);
+      
       if (fileInputRef.current) {
         fileInputRef.current.value = "";
       }
@@ -74,14 +66,13 @@ export function BarrackPhotoUpload({ currentPhotoUrl, onPhotoUploaded }: Barrack
         title: "Photo uploaded",
         description: "Barrack photo has been uploaded successfully",
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error("Upload error:", error);
       toast({
         title: "Upload failed",
-        description: "Failed to upload photo. Please try again.",
+        description: error.message || "Failed to upload photo. Please try again.",
         variant: "destructive",
       });
-      // Reset file input on error too
       if (fileInputRef.current) {
         fileInputRef.current.value = "";
       }
