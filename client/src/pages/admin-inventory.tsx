@@ -156,7 +156,7 @@ export default function AdminInventoryPage() {
                     <TableRow>
                       <TableHead>Barrack</TableHead>
                       <TableHead>Item Name</TableHead>
-                      <TableHead className="text-right">Quantity</TableHead>
+                      <TableHead>Quantity</TableHead>
                       <TableHead>Status</TableHead>
                       <TableHead className="text-right w-32">Actions</TableHead>
                     </TableRow>
@@ -168,7 +168,7 @@ export default function AdminInventoryPage() {
                         <TableRow key={item.id} data-testid={`row-inventory-item-${item.id}`}>
                           <TableCell className="font-medium">{barrack?.name || 'Unknown'}</TableCell>
                           <TableCell data-testid={`text-inventory-name-${item.id}`}>{item.itemName}</TableCell>
-                          <TableCell className="text-right" data-testid={`text-inventory-quantity-${item.id}`}>{item.quantity}</TableCell>
+                          <TableCell data-testid={`text-inventory-quantity-${item.id}`}>{item.quantity}</TableCell>
                           <TableCell data-testid={`text-inventory-status-${item.id}`}>{item.status || 'APBN'}</TableCell>
                           <TableCell className="text-right">
                             <div className="flex justify-end gap-2">
