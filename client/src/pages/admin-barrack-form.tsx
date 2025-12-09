@@ -749,7 +749,7 @@ export default function AdminBarrackFormPage() {
                 data-testid="button-save"
               >
                 <Save className="w-4 h-4" />
-                {saveMutation.isPending ? "Saving..." : "Save Barrack"}
+                {saveMutation.isPending ? "Saving..." : "Save Room"}
               </Button>
             </div>
           </form>
