@@ -155,7 +155,7 @@ export default function BarrackDetailPage() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Package className="w-5 h-5" />
-                  Inventory
+                  Inventaris
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -164,8 +164,8 @@ export default function BarrackDetailPage() {
                     <Table>
                       <TableHeader>
                         <TableRow>
-                          <TableHead>Item Name</TableHead>
-                          <TableHead>Quantity</TableHead>
+                          <TableHead>Nama Item</TableHead>
+                          <TableHead>Jumlah</TableHead>
                           <TableHead>Status</TableHead>
                         </TableRow>
                       </TableHeader>
@@ -199,7 +199,7 @@ export default function BarrackDetailPage() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Users className="w-5 h-5" />
-                  Barrack Members
+                  Anggota Staf
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -208,9 +208,9 @@ export default function BarrackDetailPage() {
                     <Table>
                       <TableHeader>
                         <TableRow>
-                          <TableHead>Name</TableHead>
-                          <TableHead>Rank</TableHead>
-                          <TableHead>Role</TableHead>
+                          <TableHead>Nama</TableHead>
+                          <TableHead>Pangkat</TableHead>
+                          <TableHead>Jabatan</TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
@@ -243,11 +243,11 @@ export default function BarrackDetailPage() {
           <div>
             <Card className="sticky top-4">
               <CardHeader>
-                <CardTitle>Barrack Information</CardTitle>
+                <CardTitle>Informasi Staf</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
-                  <Label className="text-sm text-muted-foreground">Person in Charge</Label>
+                  <Label className="text-sm text-muted-foreground">Penanggung Jawab</Label>
                   <div className="flex items-center gap-2 mt-1">
                     <User className="w-4 h-4 text-muted-foreground" />
                     <span className="font-medium" data-testid="text-pic-name">
@@ -257,7 +257,7 @@ export default function BarrackDetailPage() {
                 </div>
 
                 <div>
-                  <Label className="text-sm text-muted-foreground">Verification Status</Label>
+                  <Label className="text-sm text-muted-foreground">Status Verifikasi</Label>
                   <div className="mt-1">
                     {barrack.verified ? (
                       <Badge variant="default" className="bg-primary text-primary-foreground gap-1.5" data-testid="badge-verified">
@@ -281,7 +281,7 @@ export default function BarrackDetailPage() {
                     data-testid="button-verify-information"
                   >
                     <ShieldCheck className="w-4 h-4" />
-                    Verify Information
+                    Verifikasi Informasi
                   </Button>
                   {!barrack.pic && (
                     <p className="text-xs text-muted-foreground mt-2">
