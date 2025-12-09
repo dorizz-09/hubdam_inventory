@@ -136,14 +136,14 @@ export default function AdminMembersPage() {
     <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-3xl font-bold mb-2">Manage Members</h1>
+            <h1 className="text-3xl font-bold mb-2">Manage Staffs</h1>
             <p className="text-muted-foreground">
-              Assign or remove personnel from barracks
+              Assign or remove personnel from rooms
             </p>
           </div>
           <Button className="gap-2" onClick={() => handleOpenDialog()} data-testid="button-add-member">
             <Plus className="w-4 h-4" />
-            Add Member
+            Add Staff
           </Button>
         </div>
 
@@ -154,10 +154,10 @@ export default function AdminMembersPage() {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Barrack</TableHead>
-                      <TableHead>Name</TableHead>
-                      <TableHead>Rank</TableHead>
-                      <TableHead>Role</TableHead>
+                      <TableHead>Room</TableHead>
+                      <TableHead>Nama</TableHead>
+                      <TableHead>Pangkat</TableHead>
+                      <TableHead>Jabatan</TableHead>
                       <TableHead className="text-right w-32">Actions</TableHead>
                     </TableRow>
                   </TableHeader>
@@ -203,11 +203,11 @@ export default function AdminMembersPage() {
             <Users className="w-16 h-16 mx-auto text-muted-foreground/40 mb-4" />
             <h3 className="text-lg font-medium mb-2">No members assigned</h3>
             <p className="text-sm text-muted-foreground mb-6">
-              Start assigning personnel to barracks
+              Start assigning personnel to rooms
             </p>
             <Button className="gap-2" onClick={() => handleOpenDialog()}>
               <Plus className="w-4 h-4" />
-              Add Member
+              Add Staff
             </Button>
           </div>
         )}
@@ -223,14 +223,14 @@ export default function AdminMembersPage() {
             </DialogHeader>
             <div className="space-y-4 py-4">
               <div>
-                <Label htmlFor="barrackId">Barrack</Label>
+                <Label htmlFor="barrackId">Room</Label>
                 <Select
                   value={formData.barackId}
                   onValueChange={(value) => setFormData({ ...formData, barackId: value })}
                   required
                 >
                   <SelectTrigger id="barrackId" data-testid="select-member-barrack">
-                    <SelectValue placeholder="Select a barrack" />
+                    <SelectValue placeholder="Select a room" />
                   </SelectTrigger>
                   <SelectContent>
                     {barracks?.map((barrack) => (
@@ -242,7 +242,7 @@ export default function AdminMembersPage() {
                 </Select>
               </div>
               <div>
-                <Label htmlFor="name">Name</Label>
+                <Label htmlFor="name">Nama</Label>
                 <Input
                   id="name"
                   value={formData.name}
@@ -253,7 +253,7 @@ export default function AdminMembersPage() {
                 />
               </div>
               <div>
-                <Label htmlFor="rank">Rank (Optional)</Label>
+                <Label htmlFor="rank">Pangkat (Optional)</Label>
                 <Input
                   id="rank"
                   value={formData.rank}
@@ -263,7 +263,7 @@ export default function AdminMembersPage() {
                 />
               </div>
               <div>
-                <Label htmlFor="role">Role (Optional)</Label>
+                <Label htmlFor="role">Jabatan (Optional)</Label>
                 <Input
                   id="role"
                   value={formData.role}

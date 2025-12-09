@@ -138,7 +138,7 @@ export default function AdminInventoryPage() {
           <div>
             <h1 className="text-3xl font-bold mb-2">Manage Inventory</h1>
             <p className="text-muted-foreground">
-              Add, update, or remove inventory items for all barracks
+              Add, update, or remove inventory items for all rooms
             </p>
           </div>
           <Button className="gap-2" onClick={() => handleOpenDialog()} data-testid="button-add-inventory">
@@ -154,9 +154,9 @@ export default function AdminInventoryPage() {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Barrack</TableHead>
-                      <TableHead>Item Name</TableHead>
-                      <TableHead>Quantity</TableHead>
+                      <TableHead>Room</TableHead>
+                      <TableHead>Nama Item</TableHead>
+                      <TableHead>Jumlah</TableHead>
                       <TableHead>Status</TableHead>
                       <TableHead className="text-right w-32">Actions</TableHead>
                     </TableRow>
@@ -223,14 +223,14 @@ export default function AdminInventoryPage() {
             </DialogHeader>
             <div className="space-y-4 py-4">
               <div>
-                <Label htmlFor="barrackId">Barrack</Label>
+                <Label htmlFor="barrackId">Room</Label>
                 <Select
                   value={formData.barackId}
                   onValueChange={(value) => setFormData({ ...formData, barackId: value })}
                   required
                 >
                   <SelectTrigger id="barrackId" data-testid="select-barrack">
-                    <SelectValue placeholder="Select a barrack" />
+                    <SelectValue placeholder="Select a room" />
                   </SelectTrigger>
                   <SelectContent>
                     {barracks?.map((barrack) => (
@@ -242,7 +242,7 @@ export default function AdminInventoryPage() {
                 </Select>
               </div>
               <div>
-                <Label htmlFor="itemName">Item Name</Label>
+                <Label htmlFor="itemName">Nama Item</Label>
                 <Input
                   id="itemName"
                   value={formData.itemName}
@@ -253,7 +253,7 @@ export default function AdminInventoryPage() {
                 />
               </div>
               <div>
-                <Label htmlFor="quantity">Quantity</Label>
+                <Label htmlFor="quantity">Jumlah</Label>
                 <Input
                   id="quantity"
                   type="number"

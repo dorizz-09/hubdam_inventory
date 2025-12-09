@@ -58,15 +58,15 @@ export default function AdminBarracksPage() {
     <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-3xl font-bold mb-2">Manage Barracks</h1>
+            <h1 className="text-3xl font-bold mb-2">Manage Rooms</h1>
             <p className="text-muted-foreground">
-              View, edit, and delete barrack records
+              View, edit, and delete room records
             </p>
           </div>
           <Link href="/admin/barracks/new">
             <Button className="gap-2" data-testid="button-add-barrack">
               <Plus className="w-4 h-4" />
-              Add Barrack
+              Add Room
             </Button>
           </Link>
         </div>
