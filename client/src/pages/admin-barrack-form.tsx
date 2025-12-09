@@ -379,13 +379,13 @@ export default function AdminBarrackFormPage() {
             data-testid="button-back"
           >
             <ArrowLeft className="w-4 h-4" />
-            Back to Barracks
+            Back to Rooms
           </Button>
           <h1 className="text-3xl font-bold mb-2">
-            {isEdit ? "Edit Barrack" : "Add New Barrack"}
+            {isEdit ? "Edit Room" : "Add New Room"}
           </h1>
           <p className="text-muted-foreground">
-            {isEdit ? "Update barrack information, inventory, and members" : "Create a new barrack with inventory and members"}
+            {isEdit ? "Update room information, inventory, and staffs" : "Create a new room with inventory and staffs"}
           </p>
         </div>
 
@@ -394,7 +394,7 @@ export default function AdminBarrackFormPage() {
             {/* Basic Information */}
             <Card>
               <CardHeader>
-                <CardTitle>Basic Information</CardTitle>
+                <CardTitle>Room Information</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <FormField
@@ -402,7 +402,7 @@ export default function AdminBarrackFormPage() {
                   name="name"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Barrack Name</FormLabel>
+                      <FormLabel>Nama Ruangan</FormLabel>
                       <FormControl>
                         <Input {...field} placeholder="e.g., Alpha Company Barracks" data-testid="input-barrack-name" />
                       </FormControl>
@@ -416,7 +416,7 @@ export default function AdminBarrackFormPage() {
                   name="location"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Location</FormLabel>
+                      <FormLabel>Lokasi</FormLabel>
                       <FormControl>
                         <Input {...field} placeholder="e.g., Building 204, Fort Campbell" data-testid="input-location" />
                       </FormControl>
@@ -470,12 +470,12 @@ export default function AdminBarrackFormPage() {
                     name="picName"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Person in Charge (PIC) Name</FormLabel>
+                        <FormLabel>Nama Penanggung Jawab</FormLabel>
                         <FormControl>
                           <Input {...field} placeholder="e.g., John Smith (optional)" data-testid="input-pic-name" />
                         </FormControl>
                         <p className="text-sm text-muted-foreground">
-                          This name will be used as the username for verification
+                          Nama ini akan digunakan sebagai username untuk verifikasi
                         </p>
                         <FormMessage />
                       </FormItem>
@@ -487,7 +487,7 @@ export default function AdminBarrackFormPage() {
                     name="picPassword"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>PIC Password</FormLabel>
+                        <FormLabel>Password</FormLabel>
                         <FormControl>
                           <div className="relative">
                             <Input 
@@ -512,7 +512,7 @@ export default function AdminBarrackFormPage() {
                           </div>
                         </FormControl>
                         <p className="text-sm text-muted-foreground">
-                          Leave blank when editing to keep the existing password
+                          Biarkan kosong saat mengedit untuk mempertahankan kata sandi yang ada
                         </p>
                         <FormMessage />
                       </FormItem>
@@ -527,7 +527,7 @@ export default function AdminBarrackFormPage() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Package className="w-5 h-5" />
-                  Inventory
+                  Inventaris
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -536,8 +536,8 @@ export default function AdminBarrackFormPage() {
                     <Table>
                       <TableHeader>
                         <TableRow>
-                          <TableHead>Item Name</TableHead>
-                          <TableHead className="w-32">Quantity</TableHead>
+                          <TableHead>Nama Item</TableHead>
+                          <TableHead className="w-32">Jumlah</TableHead>
                           <TableHead className="w-32">Status</TableHead>
                           <TableHead className="w-16"></TableHead>
                         </TableRow>
@@ -639,7 +639,7 @@ export default function AdminBarrackFormPage() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Users className="w-5 h-5" />
-                  Members
+                  Anggota Staf
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -648,9 +648,9 @@ export default function AdminBarrackFormPage() {
                     <Table>
                       <TableHeader>
                         <TableRow>
-                          <TableHead>Name</TableHead>
-                          <TableHead className="w-40">Rank</TableHead>
-                          <TableHead className="w-40">Role</TableHead>
+                          <TableHead>Nama</TableHead>
+                          <TableHead className="w-40">Pangkat</TableHead>
+                          <TableHead className="w-40">Jabatan</TableHead>
                           <TableHead className="w-16"></TableHead>
                         </TableRow>
                       </TableHeader>
@@ -700,20 +700,20 @@ export default function AdminBarrackFormPage() {
 
                 <div className="flex gap-2">
                   <Input
-                    placeholder="Name"
+                    placeholder="Nama"
                     value={newMember.name}
                     onChange={(e) => setNewMember({ ...newMember, name: e.target.value })}
                     data-testid="input-new-member-name"
                   />
                   <Input
-                    placeholder="Rank (optional)"
+                    placeholder="Pangkat (optional)"
                     value={newMember.rank}
                     onChange={(e) => setNewMember({ ...newMember, rank: e.target.value })}
                     className="w-40"
                     data-testid="input-new-member-rank"
                   />
                   <Input
-                    placeholder="Role (optional)"
+                    placeholder="Jabatan (optional)"
                     value={newMember.role}
                     onChange={(e) => setNewMember({ ...newMember, role: e.target.value })}
                     className="w-40"
