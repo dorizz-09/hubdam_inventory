@@ -23,7 +23,7 @@ export default function HomePage() {
   useEffect(() => {
     const handleScroll = () => {
       const navbarHeight = 64;
-      const heroHeight = 400;
+      const heroHeight = window.innerHeight - navbarHeight;
       const scrollThreshold = heroHeight - navbarHeight;
       setNavHidden(window.scrollY > scrollThreshold);
     };
@@ -54,7 +54,7 @@ export default function HomePage() {
       </header>
 
       {/* Hero Section */}
-      <div className="relative h-[400px] overflow-hidden">
+      <div className="relative h-[calc(100vh-64px)] overflow-hidden">
         <img
           src={heroImage}
           alt="Military Base"
