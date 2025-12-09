@@ -35,14 +35,14 @@ export default function AdminDashboardPage() {
         <div className="mb-8">
           <h1 className="text-3xl font-bold mb-2">Admin Dashboard</h1>
           <p className="text-muted-foreground">
-            Manage barracks, inventory, and personnel
+            Kelola Ruangan, Inventaris, dan Staf
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between gap-2 space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Barracks</CardTitle>
+              <CardTitle className="text-sm font-medium">Total Ruangan</CardTitle>
               <Building2 className="w-4 h-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
@@ -56,7 +56,7 @@ export default function AdminDashboardPage() {
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between gap-2 space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Verified</CardTitle>
+              <CardTitle className="text-sm font-medium">Terverifikasi</CardTitle>
               <ShieldCheck className="w-4 h-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
@@ -70,7 +70,7 @@ export default function AdminDashboardPage() {
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between gap-2 space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Inventory Items</CardTitle>
+              <CardTitle className="text-sm font-medium">Total Inventaris</CardTitle>
               <Package className="w-4 h-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
@@ -84,7 +84,7 @@ export default function AdminDashboardPage() {
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between gap-2 space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Members</CardTitle>
+              <CardTitle className="text-sm font-medium">Total Staf</CardTitle>
               <Users className="w-4 h-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
@@ -102,12 +102,12 @@ export default function AdminDashboardPage() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Plus className="w-5 h-5" />
-                Add New Barrack
+                Add New Room
               </CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-sm text-muted-foreground">
-                Create a new barrack entry with details, PIC assignment, and photo
+                Create a new room entry with details, PIC assignment, and photo
               </p>
             </CardContent>
           </Card>
@@ -117,7 +117,7 @@ export default function AdminDashboardPage() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Building2 className="w-5 h-5" />
-                  Manage Barracks
+                  Manage Rooms
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -138,7 +138,7 @@ export default function AdminDashboardPage() {
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-muted-foreground">
-                  Add, update, or remove inventory items for all barracks
+                  Add, update, or remove inventory items for all rooms
                 </p>
               </CardContent>
             </Card>
@@ -149,12 +149,12 @@ export default function AdminDashboardPage() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Users className="w-5 h-5" />
-                  Manage Members
+                  Manage Staff
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-muted-foreground">
-                  Assign or remove personnel from barracks
+                  Assign or remove personnel from rooms
                 </p>
               </CardContent>
             </Card>

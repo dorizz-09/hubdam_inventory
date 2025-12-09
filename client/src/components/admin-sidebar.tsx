@@ -29,9 +29,9 @@ export function AdminSidebar() {
 
   const navItems = [
     { href: "/admin/dashboard", label: "Dashboard", icon: LayoutDashboard },
-    { href: "/admin/barracks", label: "Barracks", icon: Building2 },
-    { href: "/admin/inventory", label: "Inventory", icon: Package },
-    { href: "/admin/members", label: "Members", icon: Users },
+    { href: "/admin/barracks", label: "Staff Rooms", icon: Building2 },
+    { href: "/admin/inventory", label: "Inventaris", icon: Package },
+    { href: "/admin/members", label: "Anggota Staf", icon: Users },
   ];
 
   return (
