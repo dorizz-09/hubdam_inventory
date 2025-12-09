@@ -43,7 +43,7 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Building2 className="w-6 h-6" />
-            <h1 className="text-xl font-semibold">KOMLEKDAM Inventory Information</h1>
+            <h1 className="text-xl font-semibold">KOMLEKDAM INVENTORY INFORMATION</h1>
           </div>
           <Link href="/admin/login">
             <Button variant="outline" size="sm" className="bg-primary-foreground/20 border-primary-foreground/40 text-primary-foreground hover:bg-primary-foreground/30" data-testid="button-admin-login">
@@ -64,7 +64,7 @@ export default function HomePage() {
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="max-w-4xl mx-auto px-4 text-center text-white">
             <h1 className="text-4xl md:text-5xl font-bold mb-4">
-              KOMLEKDAM Inventory Information System
+              KOMLEKDAM INVENTORY INFORMATION SYSTEM
             </h1>
             <p className="text-lg md:text-xl text-white/90">
               Komlekdam XIV/Hasanuddin berkomitmen untuk menyajikan data inventaris satuan yang akurat, transparan, dan dapat diandalkan,sehingga dapat membantu meningkatkan efisiensi dan efektivitas pengelolaan inventaris satuan
