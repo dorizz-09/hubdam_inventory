@@ -43,7 +43,7 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Building2 className="w-6 h-6" />
-            <h1 className="text-xl font-semibold">Military Barracks Management</h1>
+            <h1 className="text-xl font-semibold">KOMLEKDAM Inventory Information</h1>
           </div>
           <Link href="/admin/login">
             <Button variant="outline" size="sm" className="bg-primary-foreground/20 border-primary-foreground/40 text-primary-foreground hover:bg-primary-foreground/30" data-testid="button-admin-login">
@@ -64,10 +64,10 @@ export default function HomePage() {
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="max-w-4xl mx-auto px-4 text-center text-white">
             <h1 className="text-4xl md:text-5xl font-bold mb-4">
-              Military Barracks Management System
+              KOMLEKDAM Inventory Information System
             </h1>
             <p className="text-lg md:text-xl text-white/90">
-              Centralized facility oversight and personnel management for all military barracks installations
+              Komlekdam XIV/Hasanuddin berkomitmen untuk menyajikan data inventaris satuan yang akurat, transparan, dan dapat diandalkan,sehingga dapat membantu meningkatkan efisiensi dan efektivitas pengelolaan inventaris satuan
             </p>
           </div>
         </div>
@@ -76,9 +76,9 @@ export default function HomePage() {
       <main className="max-w-7xl mx-auto px-4" id="directory">
         <div className="sticky top-0 z-40 bg-background py-6 -mx-4 px-4">
           <div className="mb-4">
-            <h2 className="text-3xl font-bold mb-2">Barracks Directory</h2>
+            <h2 className="text-3xl font-bold mb-2">Staff Room Directory</h2>
             <p className="text-muted-foreground">
-              View all military barracks facilities and their current status
+              Lihat semua fasilitas staf
             </p>
           </div>
 
