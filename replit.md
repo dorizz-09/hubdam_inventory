@@ -8,7 +8,12 @@ The system supports role-based access with two distinct user types:
 - **Admins**: Full system access for managing all barracks, inventory, and personnel
 - **PICs (Persons in Charge)**: Assigned to specific barracks with verification capabilities
 
-**Latest Update (Dec 8, 2025):** 
+**Latest Update (Dec 11, 2025):** 
+- Moved predefined barrack images from `attached_assets/generated_images/` to `client/public/generated_images/` for better local/VPS compatibility
+- Changed image imports to use public folder paths (e.g., `/generated_images/Modern_military_barrack_building_fcae3325.png`) instead of `@assets` alias
+- Fixed database records that had old object storage or filesystem paths
+
+**Previous Update (Dec 8, 2025):** 
 - Replaced Replit Object Storage with local folder storage for photo uploads. Photos are now stored in the `/uploads` folder on the server, making the application portable for local development and VPS hosting.
 - Photo upload endpoint changed from signed URL flow to direct multipart upload via `POST /api/barracks/photo-upload`.
 - Old photos are automatically deleted when replaced or when barracks are deleted.
