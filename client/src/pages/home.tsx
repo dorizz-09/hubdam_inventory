@@ -8,7 +8,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import type { Barrack, Pic } from "@shared/schema";
 import { useState, useEffect } from "react";
-import heroImage from "@assets/generated_images/Military_base_hero_banner_8bafbf52.png";
+
+const heroImage = "/generated_images/Military_base_hero_banner_8bafbf52.png";
 
 type BarrackWithPic = Barrack & { pic: Pic | null };
 

@@ -17,16 +17,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { insertBarrackSchema } from "@shared/schema";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { BarrackPhotoUpload } from "@/components/BarrackPhotoUpload";
-import modernBarrack from "@assets/generated_images/Modern_military_barrack_building_fcae3325.png";
-import traditionalBarrack from "@assets/generated_images/Traditional_barracks_building_66b8645e.png";
-import contemporaryBarrack from "@assets/generated_images/Contemporary_barracks_complex_2e44b7c9.png";
-import trainingBarrack from "@assets/generated_images/Training_barracks_facility_bb321117.png";
 
 const PHOTO_OPTIONS = [
-  { value: modernBarrack, label: "Modern Barrack" },
-  { value: traditionalBarrack, label: "Traditional Barrack" },
-  { value: contemporaryBarrack, label: "Contemporary Barrack" },
-  { value: trainingBarrack, label: "Training Barrack" },
+  { value: "/generated_images/Modern_military_barrack_building_fcae3325.png", label: "Modern Barrack" },
+  { value: "/generated_images/Traditional_barracks_building_66b8645e.png", label: "Traditional Barrack" },
+  { value: "/generated_images/Contemporary_barracks_complex_2e44b7c9.png", label: "Contemporary Barrack" },
+  { value: "/generated_images/Training_barracks_facility_bb321117.png", label: "Training Barrack" },
 ];
 
 type InventoryItemForm = {
@@ -75,7 +71,7 @@ export default function AdminBarrackFormPage() {
     defaultValues: {
       name: "",
       location: "",
-      photoUrl: modernBarrack,
+      photoUrl: "/generated_images/Modern_military_barrack_building_fcae3325.png",
       picName: "",
       picPassword: "",
     },
@@ -86,7 +82,7 @@ export default function AdminBarrackFormPage() {
       form.reset({
         name: barrack.name,
         location: barrack.location,
-        photoUrl: barrack.photoUrl || modernBarrack,
+        photoUrl: barrack.photoUrl || "/generated_images/Modern_military_barrack_building_fcae3325.png",
         picName: barrack.pic?.name || "",
         picPassword: "", // Don't prefill password for security
       });
