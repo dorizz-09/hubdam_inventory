@@ -19,10 +19,10 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { BarrackPhotoUpload } from "@/components/BarrackPhotoUpload";
 
 const PHOTO_OPTIONS = [
-  { value: "/generated_images/Modern_military_barrack_building_fcae3325.png", label: "Modern Barrack" },
-  { value: "/generated_images/Traditional_barracks_building_66b8645e.png", label: "Traditional Barrack" },
-  { value: "/generated_images/Contemporary_barracks_complex_2e44b7c9.png", label: "Contemporary Barrack" },
-  { value: "/generated_images/Training_barracks_facility_bb321117.png", label: "Training Barrack" },
+  { value: "/generated_images/Modern_military_barrack_building_fcae3325.png", label: "Gedung A" },
+  { value: "/generated_images/Traditional_barracks_building_66b8645e.png", label: "Gedung B" },
+  { value: "/generated_images/Contemporary_barracks_complex_2e44b7c9.png", label: "Gedung C" },
+  { value: "/generated_images/Training_barracks_facility_bb321117.png", label: "Gedung D" },
 ];
 
 type InventoryItemForm = {

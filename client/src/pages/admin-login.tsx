@@ -53,7 +53,7 @@ export default function AdminLoginPage() {
           </div>
           <CardTitle className="text-2xl">Admin Login</CardTitle>
           <CardDescription>
-            Enter your credentials to access the admin panel
+            Masukkan username dan password untuk mengakses panel admin
           </CardDescription>
         </CardHeader>
         <CardContent>

@@ -43,8 +43,8 @@ export default function HomePage() {
       <header className={`sticky top-0 z-50 bg-primary text-primary-foreground transition-transform duration-300 ${navHidden ? '-translate-y-full' : 'translate-y-0'}`}>
         <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Building2 className="w-6 h-6" />
-            <h1 className="text-xl font-semibold">KOMLEKDAM INVENTORY INFORMATION</h1>
+            <img src="/favicon.png" alt="Logo" className="w-8 h-8" />
+            <h1 className="text-sm md:text-xl font-semibold">KOMLEKDAM INVENTORY INFORMATION</h1>
           </div>
           <Link href="/admin/login">
             <Button variant="outline" size="sm" className="bg-primary-foreground/20 border-primary-foreground/40 text-primary-foreground hover:bg-primary-foreground/30" data-testid="button-admin-login">

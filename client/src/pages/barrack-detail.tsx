@@ -285,7 +285,7 @@ export default function BarrackDetailPage() {
                   </Button>
                   {!barrack.pic && (
                     <p className="text-xs text-muted-foreground mt-2">
-                      No PIC assigned - verification not available
+                      Tidak ada penanggung jawab yang ditugaskan - verifikasi tidak tersedia
                     </p>
                   )}
                 </div>
@@ -299,14 +299,14 @@ export default function BarrackDetailPage() {
         <DialogContent data-testid="dialog-verify">
           <form onSubmit={handleVerify}>
             <DialogHeader>
-              <DialogTitle>Verify Barrack Information</DialogTitle>
+              <DialogTitle>Verifikasi Informasi</DialogTitle>
               <DialogDescription>
-                Enter PIC credentials to verify that all displayed information is correct and up to date.
+                Masukkan username dan password untuk memverifikasi bahwa semua informasi yang ditampilkan sudah benar dan terkini.
               </DialogDescription>
             </DialogHeader>
             <div className="space-y-4 py-4">
               <div>
-                <Label htmlFor="username">PIC Username</Label>
+                <Label htmlFor="username">PJ Username</Label>
                 <Input
                   id="username"
                   value={username}
